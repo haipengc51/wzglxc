@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jiekai.wzglkg">
+    package="com.jiekai.wzglxc">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.NFC"/>
@@ -12,63 +12,67 @@
     <uses-feature android:name="android.hardware.nfc" android:required="true"/> <!--使用者必须有nfc功能-->
 
     <application
-        android:name="com.jiekai.wzglkg.AppContext"
+        android:name="com.jiekai.wzglxc.AppContext"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppBaseTheme">
-        <activity android:name="com.jiekai.wzglkg.ui.WelcomActivity">
+        <activity android:name="com.jiekai.wzglxc.ui.WelcomActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.jiekai.wzglkg.MainActivity"
+        <activity android:name="com.jiekai.wzglxc.MainActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.jiekai.wzglkg.ui.LoginActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.LoginActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.jiekai.wzglkg.ui.KeeperMainActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.KeeperMainActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.jiekai.wzglkg.ui.BindDeviceActivity_new"
+        <activity android:name="com.jiekai.wzglxc.ui.BindDeviceActivity_new"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.jiekai.wzglkg.utils.zxing.CaptureActivity"
+        <activity android:name="com.jiekai.wzglxc.utils.zxing.CaptureActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.jiekai.wzglkg.ui.DeviceOutListActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.DeviceOutListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.jiekai.wzglkg.ui.DeviceOutputActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.DeviceOutputActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name="com.jiekai.wzglkg.ui.DeviceOutPutHistoryActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.DeviceOutPutHistoryActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.jiekai.wzglkg.ui.DeviceInputActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.DeviceInputActivity"
             android:label="@string/device_input"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" />
-        <activity android:name="com.jiekai.wzglkg.ui.DeviceDetailActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.DeviceDetailActivity"
             android:label="@string/device_detail"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name="com.jiekai.wzglkg.ui.DeviceScrapActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.DeviceScrapActivity"
             android:label="@string/device_scrap"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name="com.jiekai.wzglkg.ui.DeviceRepairActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.DeviceRepairActivity"
             android:label="@string/device_repair"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name="com.jiekai.wzglkg.ui.PanKuActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.PanKuActivity"
             android:label="@string/pan_ku"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name="com.jiekai.wzglkg.ui.PanKuNumActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.PanKuNumActivity"
             android:label="@string/panku_detail"
             android:screenOrientation="portrait"/>
-        <activity android:name="com.jiekai.wzglkg.ui.LogOutActivity"
+        <activity android:name="com.jiekai.wzglxc.ui.LogOutActivity"
             android:label="@string/logout"
             android:screenOrientation="portrait"
             android:theme="@style/Activity_Dialog"/>
+        <activity android:name=".ui.DeviceDetailSimpleActivity"
+            android:label="@string/device_detail"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
     </application>
 
 </manifest>
