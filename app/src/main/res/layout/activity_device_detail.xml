@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/title_image_text_image"/>
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/read_card"
+                style="@style/button_style"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/marginTop20"
+                android:text="@string/read_card"
+                android:textSize="@dimen/title_text_size"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/sao_ma"
+                style="@style/button_style"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/marginTop20"
+                android:text="@string/recongnize_code"
+                android:textSize="@dimen/title_text_size"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:divider="@null"
+        android:layout_marginBottom="@dimen/marginTop20"
+        android:visibility="gone"/>
+
+</LinearLayout>
