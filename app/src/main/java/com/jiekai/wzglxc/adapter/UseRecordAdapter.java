@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.jiekai.wzglxc.ui.fragment.UseRecordFragment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -15,6 +17,7 @@ import java.util.List;
 
 public class UseRecordAdapter extends FragmentPagerAdapter {
     private List dataList;
+    private HashMap<String, Fragment> fragmentList = new HashMap<>();
 
     public UseRecordAdapter(FragmentManager fm, List dataList) {
         super(fm);
@@ -23,11 +26,24 @@ public class UseRecordAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        UseRecordFragment useRecordFragment;
+        String key = (String) dataList.get(position);
+        if (fragmentList.containsKey(key)) {
+            useRecordFragment = (UseRecordFragment) fragmentList.get(key);
+        } else {
+            useRecordFragment = UseRecordFragment.getInstance(key);
+        }
         return new UseRecordFragment();
     }
 
     @Override
     public int getCount() {
         return dataList == null ? 0 : dataList.size();
+    }
+
+    public void getNfcData(String nfcString) {
+        for (String key : fragmentList.keySet()) {
+            ((UseRecordFragment) fragmentList.get(key)).getNfcData(nfcString);
+        }
     }
 }

@@ -8,4 +8,5 @@ package com.jiekai.wzglxc.config;
 public class IntentFlag {
     public static final String MC = "mc";
     public static final String XH = "xh";
+    public static final String TITLE = "title";
 }
