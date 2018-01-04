@@ -188,8 +188,20 @@ public class SqlUrl {
     public static final String Get_Image_Path = "SELECT * FROM devicedoc WHERE SBBH = ? AND LB = ?";
     /**
      * 获取记录列表的内容（有哪些内容需要记录）
+     * 通过标签获取
      */
-    public static final String Get_Record_List = "SELECT devicelogsort.* FROM device, devicelogsort WHERE " +
+    public static final String Get_Record_List = "SELECT devicelogsort.*, device.BH FROM device, devicelogsort WHERE " +
             "(device.IDDZMBH1 = ? OR device.IDDZMBH2 = ? OR device.IDDZMBH3 = ?) " +
             "AND devicelogsort.LBBH = device.GG";
+    /**
+     * 获取记录列表的内容（有哪些内容需要记录）
+     * 通过设备自编号获取
+     */
+    public static final String Get_Record_List_by_BH = "SELECT devicelogsort.*, device.BH FROM device, devicelogsort WHERE " +
+            "device.BH = ? " +
+            "AND devicelogsort.LBBH = device.GG";
+    /**
+     * 添加一条记录信息--现场添加记录信息
+     */
+    public static final String ADD_RECORD = "INSERT INTO devicelog (JLZLMC, SBBH, DH, JH, JLSJ, CZR) VALUES (?, ?, ?, ?, ?, ?)";
 }

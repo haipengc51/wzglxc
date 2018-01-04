@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.jiekai.wzglxc.entity.RecordFragmentEntity;
 import com.jiekai.wzglxc.ui.fragment.UseRecordFragment;
 
 import java.util.ArrayList;
@@ -27,13 +28,16 @@ public class UseRecordAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         UseRecordFragment useRecordFragment;
-        String key = (String) dataList.get(position);
+        RecordFragmentEntity entity = (RecordFragmentEntity) dataList.get(position);
+        String key = entity.getTitle();
+        String bh = entity.getSBBH();
         if (fragmentList.containsKey(key)) {
             useRecordFragment = (UseRecordFragment) fragmentList.get(key);
         } else {
-            useRecordFragment = UseRecordFragment.getInstance(key);
+            useRecordFragment = UseRecordFragment.getInstance(key, bh);
+            fragmentList.put(key, useRecordFragment);
         }
-        return new UseRecordFragment();
+        return useRecordFragment;
     }
 
     @Override

@@ -126,4 +126,9 @@
     <string name="input_duihao">请输入队号</string>
     <string name="jinghao_">井号:</string>
     <string name="commit">提交</string>
+    <string name="get_bh_faild">获取自编码错误</string>
+    <string name="please_input_duihao">请输入队号</string>
+    <string name="commit_record_faild">提交记录失败</string>
+    <string name="commit_record_success">提交记录成功</string>
+    <string name="choose_recent_use">选择最近使用过的设备自编号</string>
 </resources>

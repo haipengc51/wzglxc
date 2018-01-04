@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jiekai.wzglxc.R;
+import com.jiekai.wzglxc.entity.RecordFragmentEntity;
 import com.jiekai.wzglxc.utils.CommonUtils;
 
 import java.util.List;
@@ -68,8 +69,8 @@ public class TitleAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final MyViewHolder myViewHolder = (MyViewHolder) holder;
-        String item = (String) dataList.get(position);
-        myViewHolder.title.setText(item);
+        RecordFragmentEntity item = (RecordFragmentEntity) dataList.get(position);
+        myViewHolder.title.setText(item.getTitle());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         if (position == 0) {
             params.setMargins((int) context.getResources().getDimension(R.dimen.marginTop10), 0, (int) context.getResources().getDimension(R.dimen.marginTop10), 0);

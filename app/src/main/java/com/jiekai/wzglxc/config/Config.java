@@ -23,6 +23,7 @@ public class Config {
     public static final String INIMAGE_PATH = "/in/";
     public static final String REPAIR_PATH = "/repair/";
     public static final String SCRAP_PATH = "/scrap/";
+    public static final String RECORD_PATH = "/record/";
     public static final String PICTURE_COMPRESS_PATH = Environment.getExternalStorageDirectory().toString() + "/wzgl/imag/compress";    //图片压缩的地址
     public static final String SBBD = "sbbd";   //设备绑定的类型
     public static final String doc_sbck= "sbck";    //设备出库的类型

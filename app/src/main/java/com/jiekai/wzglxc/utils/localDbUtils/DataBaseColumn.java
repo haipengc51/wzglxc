@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public abstract class DataBaseColumn {
     public static final String[] columns = new String[]{PanKuDataListColumn.class.getName(),
-            PanKuDataNumColumn.class.getName()};
+            PanKuDataNumColumn.class.getName(), RecordRecentIDColumn.class.getName()};
 
     public static final Class<DataBaseColumn>[] getSubClass() {
         ArrayList<Class<DataBaseColumn>> arrayList = new ArrayList<Class<DataBaseColumn>>();

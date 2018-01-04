@@ -14,41 +14,46 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <FrameLayout
+        <TextView
+            android:id="@+id/choose_used_text"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="@dimen/item_height"
+            android:background="@drawable/input_bg"
+            android:hint="@string/choose_recent_use"
+            android:layout_marginLeft="@dimen/marginTop20"
+            android:layout_marginRight="@dimen/marginTop20"
+            android:layout_marginTop="@dimen/marginTop20"
+            android:paddingLeft="@dimen/marginTop10"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/content_text_size"
+            android:textColor="@color/text_hint_color"/>
 
-            <TextView
-                android:id="@+id/read_card"
-                style="@style/button_style"
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/marginTop20"
-                android:text="@string/read_card"
-                android:textSize="@dimen/title_text_size"/>
-
-        </FrameLayout>
-
-        <FrameLayout
+        <TextView
+            android:id="@+id/read_card"
+            style="@style/button_style"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="@dimen/item_height"
+            android:layout_marginRight="@dimen/marginTop20"
+            android:layout_marginLeft="@dimen/marginTop20"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/marginTop20"
+            android:text="@string/read_card"
+            android:textSize="@dimen/title_text_size"/>
 
-            <TextView
-                android:id="@+id/sao_ma"
-                style="@style/button_style"
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/marginTop20"
-                android:text="@string/recongnize_code"
-                android:textSize="@dimen/title_text_size"/>
-
-        </FrameLayout>
+        <TextView
+            android:id="@+id/sao_ma"
+            style="@style/button_style"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height"
+            android:layout_marginRight="@dimen/marginTop20"
+            android:layout_marginLeft="@dimen/marginTop20"
+            android:layout_marginTop="@dimen/marginTop20"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/marginTop20"
+            android:text="@string/recongnize_code"
+            android:textSize="@dimen/title_text_size"/>
 
     </LinearLayout>
 

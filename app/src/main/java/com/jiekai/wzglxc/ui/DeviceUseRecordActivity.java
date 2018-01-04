@@ -1,6 +1,7 @@
 package com.jiekai.wzglxc.ui;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -11,17 +12,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jiekai.wzglxc.AppContext;
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.adapter.TitleAdapter;
 import com.jiekai.wzglxc.adapter.UseRecordAdapter;
 import com.jiekai.wzglxc.config.Constants;
 import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DevicelogsortEntity;
+import com.jiekai.wzglxc.entity.PankuDataNumEntity;
+import com.jiekai.wzglxc.entity.RecordFragmentEntity;
+import com.jiekai.wzglxc.entity.RecordRecentIdEntity;
 import com.jiekai.wzglxc.test.NFCBaseActivity;
-import com.jiekai.wzglxc.ui.base.MyBaseActivity;
+import com.jiekai.wzglxc.ui.popup.DeviceCodePopup;
 import com.jiekai.wzglxc.utils.StringUtils;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
+import com.jiekai.wzglxc.utils.localDbUtils.PanKuDataNumColumn;
+import com.jiekai.wzglxc.utils.localDbUtils.RecordRecentIDColumn;
 import com.jiekai.wzglxc.utils.zxing.CaptureActivity;
 
 import java.util.ArrayList;
@@ -35,7 +42,8 @@ import butterknife.ButterKnife;
  * 设备使用记录界面（安装记录，回收记录，转井记录等）
  */
 
-public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnClickListener {
+public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnClickListener,
+        DeviceCodePopup.OnDeviceCodeClick {
     @BindView(R.id.back)
     ImageView back;
     @BindView(R.id.title)
@@ -54,14 +62,18 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
     LinearLayout buttonLayout;
     @BindView(R.id.record_view)
     LinearLayout recordView;
+    @BindView(R.id.choose_used_text)
+    TextView chooseUsedText;
 
-    private List<String> titleList = new ArrayList<>();
+    private List<RecordFragmentEntity> titleList = new ArrayList<>();
 
     private UseRecordAdapter viewPagerAdapter;
     private TitleAdapter titleAdapter;
 
     private AlertDialog alertDialog;
     private boolean enableNfc = false;
+
+    private DeviceCodePopup recentID;
 
     @Override
     public void initView() {
@@ -76,6 +88,7 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
         back.setOnClickListener(this);
         readCard.setOnClickListener(this);
         saoMa.setOnClickListener(this);
+        chooseUsedText.setOnClickListener(this);
 
 
         alertDialog = new AlertDialog.Builder(mActivity)
@@ -122,6 +135,8 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
                 viewPager.setCurrentItem(position);
             }
         });
+
+        recentID = new DeviceCodePopup(this, chooseUsedText, this);
     }
 
     @Override
@@ -138,15 +153,18 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
             case R.id.sao_ma:
                 startActivityForResult(new Intent(mActivity, CaptureActivity.class), Constants.SCAN);
                 break;
+            case R.id.choose_used_text:
+                getRecentID();
+                break;
         }
     }
 
     @Override
     public void getNfcData(String nfcString) {
-        if (alertDialog != null) {
+        if (alertDialog != null && alertDialog.isShowing()) {
             alertDialog.dismiss();
         }
-        if(viewPagerAdapter != null) {
+        if (viewPagerAdapter != null) {
             viewPagerAdapter.getNfcData(nfcString);
         }
         if (enableNfc) {
@@ -158,6 +176,7 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
 
     /**
      * 通过id获取记录列表
+     *
      * @param cardId
      */
     private void getRecordList(String cardId) {
@@ -185,8 +204,100 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
                             titleList.clear();
-                            for (int i=0; i<result.size(); i++) {
-                                titleList.add( ((DevicelogsortEntity) result.get(i)).getJLZLMC() );
+                            for (int i = 0; i < result.size(); i++) {
+                                RecordFragmentEntity recordFragmentEntity = new RecordFragmentEntity();
+                                DevicelogsortEntity entity = (DevicelogsortEntity) result.get(i);
+                                recordFragmentEntity.setTitle(entity.getJLZLMC());
+                                recordFragmentEntity.setSBBH(entity.getBH());
+                                titleList.add(recordFragmentEntity);
+                            }
+                            titleAdapter.notifyDataSetChanged();
+                            viewPagerAdapter.notifyDataSetChanged();
+                            buttonLayout.setVisibility(View.GONE);
+                            recordView.setVisibility(View.VISIBLE);
+                            addRecentId(((DevicelogsortEntity)result.get(0)).getBH());
+                        } else {
+                            alert(R.string.no_data);
+                        }
+                        dismissProgressDialog();
+                    }
+                });
+    }
+
+    private void addRecentId(String bh) {
+        String sql = "SELECT * FROM " + RecordRecentIDColumn.TABLE_NAME + " WHERE " +
+                RecordRecentIDColumn.BH + " = ? ";
+        List result = AppContext.dbHelper.selectAll(sql, RecordRecentIdEntity.class,
+                new String[]{bh});
+        if (result != null && result.size() != 0) {
+
+        } else {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(RecordRecentIDColumn.BH, bh);
+            AppContext.dbHelper.insertSql(RecordRecentIDColumn.TABLE_NAME, contentValues);
+        }
+    }
+
+    private void getRecentID() {
+        String sql = "SELECT * FROM " + RecordRecentIDColumn.TABLE_NAME
+                + " order by " + RecordRecentIDColumn.ID + " desc limit 0,5";
+        List<RecordRecentIdEntity> result = AppContext.dbHelper.selectAll(sql, RecordRecentIdEntity.class,
+                null);
+        if (result != null && result.size() != 0) {
+            List<String> recentList = new ArrayList<>();
+            for (int i = 0; i < result.size(); i++) {
+                recentList.add(result.get(i).getBH());
+            }
+            recentID.setPopListData(recentList);
+            recentID.showCenter(chooseUsedText);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.SCAN && resultCode == RESULT_OK) {
+            String code = data.getExtras().getString("result");
+            getRecordList(code);
+        }
+    }
+
+    @Override
+    public void OnDeviceCodeClick(String deviceCode) {
+        getListByBH(deviceCode);
+    }
+
+    private void getListByBH(String BH) {
+        if (StringUtils.isEmpty(BH)) {
+            alert(R.string.get_bh_faild);
+            return;
+        }
+        DBManager.dbDeal(DBManager.SELECT)
+                .sql(SqlUrl.Get_Record_List_by_BH)
+                .params(new String[]{BH})
+                .clazz(DevicelogsortEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+                        showProgressDialog(getResources().getString(R.string.loading_data));
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        alert(err);
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        if (result != null && result.size() != 0) {
+                            titleList.clear();
+                            for (int i = 0; i < result.size(); i++) {
+                                RecordFragmentEntity recordFragmentEntity = new RecordFragmentEntity();
+                                DevicelogsortEntity entity = (DevicelogsortEntity) result.get(i);
+                                recordFragmentEntity.setTitle(entity.getJLZLMC());
+                                recordFragmentEntity.setSBBH(entity.getBH());
+                                titleList.add(recordFragmentEntity);
                             }
                             titleAdapter.notifyDataSetChanged();
                             viewPagerAdapter.notifyDataSetChanged();
@@ -198,14 +309,5 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
                         dismissProgressDialog();
                     }
                 });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constants.SCAN && resultCode == RESULT_OK) {
-            String code = data.getExtras().getString("result");
-            getRecordList(code);
-        }
     }
 }

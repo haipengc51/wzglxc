@@ -21,7 +21,7 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase db;
     private static final String DB_NAME = "wzgl";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3;
     public static DBHelper dbHelper;
     public Context mContext;
 
