@@ -2,7 +2,6 @@ package com.jiekai.wzglxc.ui.fragment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,9 @@ import android.widget.Toast;
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.config.IntentFlag;
 import com.jiekai.wzglxc.test.NFCBaseActivity;
-import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.jiekai.wzglxc.ui.fragment.base.MyNFCBaseFragment;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by laowu on 2018/1/2.
@@ -53,16 +49,27 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
         return useRecordFragment;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_use_record, container, false);
+    }
+
+    @Override
+    public void initData() {
         Bundle bundle = getArguments();
         if (bundle != null) {
             title = bundle.getString(IntentFlag.TITLE);
         }
-        View view = inflater.inflate(R.layout.fragment_use_record, container, false);
-        init();
-        return view;
+    }
+
+    @Override
+    public void initOperation() {
+        readCard.setOnClickListener(this);
+
+        alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle("")
+                .setMessage(getResources().getString(R.string.please_nfc))
+                .create();
     }
 
     /**
@@ -78,15 +85,6 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
             Toast.makeText(getActivity(), "--"+nfcString, Toast.LENGTH_SHORT).show();
         }
         enableNfc = false;
-    }
-
-    private void init() {
-        readCard.setOnClickListener(this);
-
-        alertDialog = new AlertDialog.Builder(getActivity())
-                .setTitle("")
-                .setMessage(getResources().getString(R.string.please_nfc))
-                .create();
     }
 
     @Override
