@@ -4,10 +4,46 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <include
+        layout="@layout/title_image_text_image"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_height"
         android:layout_marginTop="@dimen/marginTop20"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/marginTop20"
+            android:text="@string/record_type"
+            android:textColor="@color/text_content_color"
+            android:textSize="@dimen/content_text_size"/>
+
+        <TextView
+            android:id="@+id/record_type"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/marginTop10"
+            android:layout_marginRight="@dimen/marginTop20"
+            android:background="@drawable/input_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:singleLine="true"
+            android:hint="@string/record_type"
+            android:textColor="@color/text_content_color"
+            android:textSize="@dimen/content_text_size"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_height"
+        android:layout_marginTop="@dimen/marginTop10"
         android:orientation="horizontal">
 
         <TextView
@@ -142,8 +178,40 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_height"
+        android:layout_marginTop="@dimen/marginTop10"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/marginTop20"
+            android:text="@string/check_remark"
+            android:textColor="@color/text_content_color"
+            android:textSize="@dimen/content_text_size"/>
+
+        <TextView
+            android:id="@+id/check_remark"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height"
+            android:layout_marginLeft="@dimen/marginTop20"
+            android:layout_marginRight="@dimen/marginTop20"
+            android:background="@drawable/input_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:singleLine="true"
+            android:hint="@string/check_remark"
+            android:textColor="@color/text_content_color"
+            android:textSize="@dimen/content_text_size"/>
+
+    </LinearLayout>
+
     <TextView
-        android:id="@+id/commit"
+        android:id="@+id/recommit"
         style="@style/button_style"
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_height"
@@ -154,7 +222,7 @@
         android:layout_marginLeft="@dimen/marginTop20"
         android:layout_marginRight="@dimen/marginTop20"
         android:layout_marginTop="@dimen/marginTop20"
-        android:text="@string/commit"
+        android:text="@string/recommit"
         android:textSize="@dimen/title_text_size"/>
 
 </LinearLayout>

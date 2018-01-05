@@ -77,6 +77,12 @@
             android:label="@string/device_use_record"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
+        <activity android:name=".ui.RecordHistoryActivity"
+            android:label="@string/record_check_result"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.RecordHistoryDetailActivity"
+            android:label="@string/record_failed_detail"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

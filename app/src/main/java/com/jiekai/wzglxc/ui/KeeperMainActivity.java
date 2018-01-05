@@ -49,6 +49,7 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
         dataList.add(new KeeperEntity(getResources().getString(R.string.device_detail), DeviceDetailSimpleActivity.class));
         dataList.add(new KeeperEntity(getResources().getString(R.string.device_use_record), DeviceUseRecordActivity.class));
         dataList.add(new KeeperEntity(getResources().getString(R.string.device_scrap), DeviceScrapActivity.class));
+        dataList.add(new KeeperEntity(getResources().getString(R.string.record_check_result), RecordHistoryActivity.class));
         dataList.add(new KeeperEntity(getResources().getString(R.string.logout), LogOutActivity.class));
     }
 
