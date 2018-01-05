@@ -94,6 +94,7 @@ public class AppContext extends Application {
 
                                 }
                             });
+                            alertDialog.show();
                         }
                     }
                 });
