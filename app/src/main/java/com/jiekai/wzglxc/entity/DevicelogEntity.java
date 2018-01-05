@@ -10,7 +10,7 @@ import java.sql.Date;
  */
 
 public class DevicelogEntity extends BaseEntity {
-    private String ID;
+    private int ID = -1;
     private String JLZLMC;
     private String SBBH;
     private String DH;
@@ -23,11 +23,11 @@ public class DevicelogEntity extends BaseEntity {
     private Date SHSJ;
     private String SHBZ;
 
-    public String getID() {
+    public int getID() {
         return ID;
     }
 
-    public void setID(String ID) {
+    public void setID(int ID) {
         this.ID = ID;
     }
 

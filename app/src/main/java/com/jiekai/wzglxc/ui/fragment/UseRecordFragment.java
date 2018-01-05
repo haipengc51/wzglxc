@@ -131,6 +131,10 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
             case R.id.choose_picture:
                 PictureSelectUtils.choosePicture(PictureSelector.create(this), Constants.REQUEST_PICTURE);
                 break;
+            case R.id.record_image:
+                if (choosePictures != null && choosePictures.size() != 0)
+                    PictureSelectUtils.previewPicture(mActivity, choosePictures);
+                break;
             case R.id.commit:
                 upload();
                 break;
@@ -254,6 +258,74 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
                         dismissProgressDialog();
                         deletImage();
                         rollback();
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        getInsertId();
+                    }
+                });
+    }
+
+    private void getInsertId() {
+        DBManager.dbDeal(DBManager.EVENT_SELECT)
+                .sql(SqlUrl.SELECT_INSERT_ID)
+                .clazz(LastInsertIdEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        alert(err);
+                        dismissProgressDialog();
+                        rollback();
+                        deletImage();
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        if (result != null && result.size() != 0) {
+                            insertImagePath(String.valueOf(((LastInsertIdEntity) result.get(0)).getLast_insert_id()));
+                        } else {
+                            alert(R.string.insert_erro);
+                            dismissProgressDialog();
+                            rollback();
+                            deletImage();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 图片路径插入到数据库中
+     * SBBH就是上次插入的id
+     */
+    private void insertImagePath(String SBBH) {
+        String fileSize = FileSizeUtils.getAutoFileOrFilesSize(localPath);
+        if (StringUtils.isEmpty(fileSize)) {
+            rollback();
+            deletImage();
+            dismissProgressDialog();
+            return;
+        }
+        DBManager.dbDeal(DBManager.EVENT_INSERT)
+                .sql(SqlUrl.INSERT_IAMGE)
+                .params(new String[]{SBBH, romoteImageName, fileSize, imagePath, imageType, Config.doc_sbjlzl})
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        alert(err);
+                        dismissProgressDialog();
+                        rollback();
+                        deletImage();
                     }
 
                     @Override

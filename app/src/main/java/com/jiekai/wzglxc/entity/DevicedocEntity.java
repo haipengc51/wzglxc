@@ -8,7 +8,7 @@ import com.jiekai.wzglxc.entity.base.BaseEntity;
  */
 
 public class DevicedocEntity extends BaseEntity {
-    private String ID;
+    private int ID;
     private String SBBH;
     private String WJMC;    //文件名称
     private String WJDX;    //文件大小
@@ -16,11 +16,11 @@ public class DevicedocEntity extends BaseEntity {
     private String WDLX;    //文件类型
     private String LB;
 
-    public String getID() {
+    public int getID() {
         return ID;
     }
 
-    public void setID(String ID) {
+    public void setID(int ID) {
         this.ID = ID;
     }
 

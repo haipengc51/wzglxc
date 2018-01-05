@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.jiekai.wzglxc.AppContext;
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.adapter.KeeperAdapter;
 import com.jiekai.wzglxc.entity.KeeperEntity;
@@ -60,6 +61,7 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
             gridView.setAdapter(adapter);
             gridView.setOnItemClickListener(this);
         }
+        AppContext.getUnCheckedData(this, userData.getUSERID());
     }
 
     @Override

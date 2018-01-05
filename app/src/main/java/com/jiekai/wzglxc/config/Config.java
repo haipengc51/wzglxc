@@ -39,5 +39,5 @@ public class Config {
     public static final String doc_sywhsms= "sywhsms";    //使用维护说明书
     public static final String doc_yspj= "yspj";    //易损配件
     public static final String doc_qtfj= "qtfj";    //其他附件
-
+    public static final String doc_sbjlzl= "sbjlzl";    //设备记录种类
 }

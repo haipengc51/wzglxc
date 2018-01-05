@@ -207,5 +207,5 @@ public class SqlUrl {
     /**
      * 检查现场提交的记录的结果（列举所有没有通过审核的和没有审核的结果）
      */
-    public static final String GET_RECORD_CHECK_LIST = "SELECT * FROM devicelog WHERE CZR = ? AND (SHYJ = 0 OR SHYJ = \"\")";
+    public static final String GET_RECORD_CHECK_LIST = "SELECT * FROM devicelog WHERE CZR = ? AND SHYJ = 0";
 }

@@ -139,4 +139,6 @@
     <string name="check_remark">审核备注</string>
     <string name="recommit">重新提交</string>
     <string name="record_failed_detail">未通过审核详情</string>
+    <string name="get_image_fail">获取图片失败</string>
+    <string name="device_recod_faild">设备记录失败</string>
 </resources>
