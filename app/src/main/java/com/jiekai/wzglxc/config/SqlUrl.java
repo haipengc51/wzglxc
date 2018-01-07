@@ -113,6 +113,8 @@ public class SqlUrl {
      * 插入图片到服务器中（ID, 文件名称， 文件大小， 文件地址，文件类型，类别）
      */
     public static final String INSERT_IAMGE = "INSERT INTO devicedoc (SBBH, WJMC, WJDX, WJDZ, WDLX, LB) VALUES (?, ?, ?, ?, ?, ?)";
+
+    public static final String UPDATE_IMAGE = "UPDATE devicedoc SET WJMC = ?, WJDX = ?, WJDZ = ?, WDLX = ? WHERE SBBH = ? AND LB = ?";
     /**
      * 查找上次插入数据所返回的ID
      */
@@ -205,7 +207,12 @@ public class SqlUrl {
      */
     public static final String ADD_RECORD = "INSERT INTO devicelog (JLZLMC, SBBH, DH, JH, JLSJ, CZR) VALUES (?, ?, ?, ?, ?, ?)";
     /**
+     * 更新记录信息
+     */
+    public static final String UPDATE_RECORD = "UPDATE devicelog SET DH = ?, JH =?, JLSJ = ?, CZR = ?," +
+            " SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE ID = ?";
+    /**
      * 检查现场提交的记录的结果（列举所有没有通过审核的和没有审核的结果）
      */
-    public static final String GET_RECORD_CHECK_LIST = "SELECT * FROM devicelog WHERE CZR = ? AND SHYJ = 0";
+    public static final String GET_RECORD_CHECK_LIST = "SELECT * FROM devicelog WHERE CZR = ? AND SHYJ = \"0\"";
 }

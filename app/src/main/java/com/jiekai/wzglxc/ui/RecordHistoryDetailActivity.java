@@ -231,10 +231,10 @@ public class RecordHistoryDetailActivity extends MyBaseActivity implements View.
      * 插入记录的数据库
      */
     private void insertRecord() {
-        DBManager.dbDeal(DBManager.EVENT_INSERT)
-                .sql(SqlUrl.ADD_RECORD)
-                .params(new Object[]{currentDatas.getJLZLMC(), currentDatas.getSBBH(), duihao.getText().toString(), jinghao.getText().toString(),
-                        new Date(new java.util.Date().getTime()), userData.getUSERID()})
+        DBManager.dbDeal(DBManager.EVENT_UPDATA)
+                .sql(SqlUrl.UPDATE_RECORD)
+                .params(new Object[]{duihao.getText().toString(), jinghao.getText().toString(),
+                        new Date(new java.util.Date().getTime()), userData.getUSERID(), currentDatas.getID()})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {
@@ -252,41 +252,9 @@ public class RecordHistoryDetailActivity extends MyBaseActivity implements View.
                     @Override
                     public void onResponse(List result) {
                         if (isChooseImage) {
-                            getInsertId();
+                            insertImagePath(String.valueOf(currentDatas.getID()));
                         } else {
                             commit();
-                        }
-                    }
-                });
-    }
-
-    private void getInsertId() {
-        DBManager.dbDeal(DBManager.EVENT_SELECT)
-                .sql(SqlUrl.SELECT_INSERT_ID)
-                .clazz(LastInsertIdEntity.class)
-                .execut(new DbCallBack() {
-                    @Override
-                    public void onDbStart() {
-
-                    }
-
-                    @Override
-                    public void onError(String err) {
-                        alert(err);
-                        dismissProgressDialog();
-                        rollback();
-                        deletImage();
-                    }
-
-                    @Override
-                    public void onResponse(List result) {
-                        if (result != null && result.size() != 0) {
-                            insertImagePath(String.valueOf(((LastInsertIdEntity) result.get(0)).getLast_insert_id()));
-                        } else {
-                            alert(R.string.insert_erro);
-                            dismissProgressDialog();
-                            rollback();
-                            deletImage();
                         }
                     }
                 });
@@ -307,9 +275,9 @@ public class RecordHistoryDetailActivity extends MyBaseActivity implements View.
             dismissProgressDialog();
             return;
         }
-        DBManager.dbDeal(DBManager.EVENT_INSERT)
-                .sql(SqlUrl.INSERT_IAMGE)
-                .params(new String[]{SBBH, romoteImageName, fileSize, imagePath, imageType, Config.doc_sbjlzl})
+        DBManager.dbDeal(DBManager.EVENT_UPDATA)
+                .sql(SqlUrl.UPDATE_IMAGE)
+                .params(new String[]{romoteImageName, fileSize, imagePath, imageType, SBBH, Config.doc_sbjlzl})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {
@@ -327,6 +295,54 @@ public class RecordHistoryDetailActivity extends MyBaseActivity implements View.
                     @Override
                     public void onResponse(List result) {
                         commit();
+                    }
+                });
+    }
+
+    /**
+     * 删除上次图片
+     */
+    private void deletRemotImage() {
+        DBManager.dbDeal(DBManager.SELECT)
+                .sql(SqlUrl.Get_Image_Path)
+                .params(new String[]{String.valueOf(currentDatas.getID()), Config.doc_sbjlzl})
+                .clazz(DevicedocEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        String filePath = ((DevicedocEntity) result.get(0)).getWJDZ();
+                        int start = filePath.indexOf(Config.FTP_PATH_HANDLER);
+                        if (filePath != null && start != -1) {
+                            filePath = filePath.substring(start + Config.FTP_PATH_HANDLER.length());
+                        } else {
+                            return;
+                        }
+                        FtpManager.getInstance().deletFile(filePath, new FtpCallBack() {
+                            @Override
+                            public void ftpStart() {
+
+                            }
+
+                            @Override
+                            public void ftpSuccess(String remotePath) {
+
+                            }
+
+                            @Override
+                            public void ftpFaild(String error) {
+
+                            }
+                        });
                     }
                 });
     }
