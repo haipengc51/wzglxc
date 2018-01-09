@@ -10,9 +10,12 @@ import android.widget.TextView;
 
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.adapter.RecordHistoryAdapter;
+import com.jiekai.wzglxc.config.Config;
 import com.jiekai.wzglxc.config.IntentFlag;
 import com.jiekai.wzglxc.config.SqlUrl;
+import com.jiekai.wzglxc.entity.DeviceUnCheckEntity;
 import com.jiekai.wzglxc.entity.DevicelogEntity;
+import com.jiekai.wzglxc.entity.DevicemoveEntity;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
@@ -40,7 +43,7 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
 
     private View headerView;
     private RecordHistoryAdapter adapter;
-    private List<DevicelogEntity> dataList = new ArrayList<>();
+    private List<DeviceUnCheckEntity> dataList = new ArrayList<>();
 
     @Override
     public void initView() {
@@ -106,7 +109,16 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
                             dataList.clear();
-                            dataList.addAll(result);
+                            for (int i=0; i<result.size(); i++) {
+                                DevicelogEntity devicelogEntity = (DevicelogEntity) result.get(i);
+                                DeviceUnCheckEntity deviceUnCheckEntity = new DeviceUnCheckEntity();
+                                deviceUnCheckEntity.setType(Config.TYPE_JL);
+                                deviceUnCheckEntity.setID(devicelogEntity.getSBBH());
+                                deviceUnCheckEntity.setJLZL(devicelogEntity.getJLZLMC());
+                                deviceUnCheckEntity.setYJ(devicelogEntity.getSHYJ());
+                                deviceUnCheckEntity.setData(devicelogEntity);
+                                dataList.add(deviceUnCheckEntity);
+                            }
                             adapter.notifyDataSetChanged();
                             setHeaderViewVisible(View.VISIBLE);
                         } else {
@@ -114,6 +126,43 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                             setHeaderViewVisible(View.GONE);
                         }
                         dismissProgressDialog();
+                    }
+                });
+        DBManager.dbDeal(DBManager.SELECT)
+                .sql(SqlUrl.GET_MOVE_CHECK_LIST)
+                .params(new String[]{userData.getUSERID()})
+                .clazz(DevicemoveEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        if (result != null && result.size() != 0) {
+                            dataList.clear();
+                            for (int i=0; i<result.size(); i++) {
+                                DevicemoveEntity devicemoveEntity = (DevicemoveEntity) result.get(i);
+                                DeviceUnCheckEntity deviceUnCheckEntity = new DeviceUnCheckEntity();
+                                deviceUnCheckEntity.setType(Config.TYPE_MOVE);
+                                deviceUnCheckEntity.setID(devicemoveEntity.getSBBH());
+                                deviceUnCheckEntity.setJLZL("设备转场");
+                                deviceUnCheckEntity.setYJ(devicemoveEntity.getSHYJ());
+                                deviceUnCheckEntity.setData(devicemoveEntity);
+                                dataList.add(deviceUnCheckEntity);
+                            }
+                            adapter.notifyDataSetChanged();
+                            setHeaderViewVisible(View.VISIBLE);
+                        } else {
+                            alert(R.string.your_all_check_pass);
+                            setHeaderViewVisible(View.GONE);
+                        }
                     }
                 });
     }

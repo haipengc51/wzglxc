@@ -212,7 +212,23 @@ public class SqlUrl {
     public static final String UPDATE_RECORD = "UPDATE devicelog SET DH = ?, JH =?, JLSJ = ?, CZR = ?," +
             " SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE ID = ?";
     /**
+     * 添加转场记录
+     */
+    public static final String ADD_MOVE = "INSERT INTO devicemove (SBBH, DH, JH, CZSJ, CZR) VALUES (?, ?, ?, ?, ?)";
+    /**
+     * 添加巡检记录
+     */
+    public static final String ADD_INSPECTION = "INSERT INTO deviceinspection (SBBH, CZSJ, CZR) VALUES (?, ?, ?)";
+    /**
      * 检查现场提交的记录的结果（列举所有没有通过审核的和没有审核的结果）
      */
     public static final String GET_RECORD_CHECK_LIST = "SELECT * FROM devicelog WHERE CZR = ? AND SHYJ = \"0\"";
+    /**
+     * 设备转库提交审核失败的结果
+     */
+    public static final String GET_MOVE_CHECK_LIST = "SELECT * FROM devicemove WHERE CZR = ? AND SHYJ = \"0\"";
+    /**
+     * 设备巡检提交审核失败的结果
+     */
+    public static final String GET_INSPECTION_CHECK_LIST = "SELECT * FROM deviceinspection WHERE CZR = ? AND SHYJ = \"0\"";
 }

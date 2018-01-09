@@ -24,6 +24,8 @@ public class Config {
     public static final String REPAIR_PATH = "/repair/";
     public static final String SCRAP_PATH = "/scrap/";
     public static final String RECORD_PATH = "/record/";
+    public static final String MOVE_PATH = "/move/";
+    public static final String INSPECTION_PATH = "/inspection/";
     public static final String PICTURE_COMPRESS_PATH = Environment.getExternalStorageDirectory().toString() + "/wzgl/imag/compress";    //图片压缩的地址
     public static final String SBBD = "sbbd";   //设备绑定的类型
     public static final String doc_sbck= "sbck";    //设备出库的类型
@@ -40,4 +42,10 @@ public class Config {
     public static final String doc_yspj= "yspj";    //易损配件
     public static final String doc_qtfj= "qtfj";    //其他附件
     public static final String doc_sbjlzl= "sbjlzl";    //设备记录种类
+    public static final String doc_sbzc= "sbzc";    //设备转场
+    public static final String doc_sbxj= "sbxj";    //设备巡检
+
+    public static final int TYPE_JL = 1;      //审核失败种类为记录种类
+    public static final int TYPE_MOVE = 2;      //审核失败种类为转库
+    public static final int TYPE_INSPECTION = 3;      //审核失败种类为巡检
 }

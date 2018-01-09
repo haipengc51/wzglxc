@@ -105,6 +105,10 @@
     <string name="device_repair_success">设备维修成功</string>
     <string name="device_scrap_success">设备报废成功</string>
     <string name="device_scrap_faild">设备报废失败</string>
+    <string name="device_move_faild">设备转场失败</string>
+    <string name="device_move_success">设备转场成功</string>
+    <string name="device_inspection_faild">设备巡检失败</string>
+    <string name="device_inspection_success">设备巡检成功</string>
     <string name="insert_erro">插入数据库错误</string>
     <string name="out_people">出库人</string>
     <string name="lingyongdanwei">领用单位</string>
@@ -123,7 +127,7 @@
     <string name="zhang_hao_jing_yong">该账号已被禁用</string>
     <string name="device_use_record">设备使用记录</string>
     <string name="duihao_">队号:</string>
-    <string name="duihao">对号</string>
+    <string name="duihao">队号</string>
     <string name="input_duihao">请输入队号</string>
     <string name="jinghao_">井号:</string>
     <string name="commit">提交</string>
@@ -132,7 +136,7 @@
     <string name="commit_record_faild">提交记录失败</string>
     <string name="commit_record_success">提交记录成功</string>
     <string name="choose_recent_use">选择最近使用过的设备自编号</string>
-    <string name="record_check_result">申请审核结果</string>
+    <string name="record_check_result">记录审核结果</string>
     <string name="record_type">记录种类</string>
     <string name="check_result">审核意见</string>
     <string name="your_all_check_pass">您所有的审核都通过了申请</string>
@@ -141,4 +145,6 @@
     <string name="record_failed_detail">未通过审核详情</string>
     <string name="get_image_fail">获取图片失败</string>
     <string name="device_recod_faild">设备记录失败</string>
+    <string name="device_move">设备转场</string>
+    <string name="device_inspection">设备巡检</string>
 </resources>

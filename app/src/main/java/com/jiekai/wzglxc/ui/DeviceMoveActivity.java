@@ -1,24 +1,20 @@
-package com.jiekai.wzglxc.ui.fragment;
+package com.jiekai.wzglxc.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.config.Config;
 import com.jiekai.wzglxc.config.Constants;
-import com.jiekai.wzglxc.config.IntentFlag;
 import com.jiekai.wzglxc.config.SqlUrl;
+import com.jiekai.wzglxc.entity.DeviceEntity;
 import com.jiekai.wzglxc.entity.LastInsertIdEntity;
 import com.jiekai.wzglxc.test.NFCBaseActivity;
-import com.jiekai.wzglxc.ui.fragment.base.MyNFCBaseFragment;
 import com.jiekai.wzglxc.utils.FileSizeUtils;
 import com.jiekai.wzglxc.utils.GlidUtils;
 import com.jiekai.wzglxc.utils.PictureSelectUtils;
@@ -35,14 +31,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-
-import static android.app.Activity.RESULT_OK;
+import butterknife.ButterKnife;
 
 /**
- * Created by laowu on 2018/1/2.
+ * Created by laowu on 2018/1/9.
  */
 
-public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClickListener{
+public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickListener {
+    @BindView(R.id.back)
+    ImageView back;
+    @BindView(R.id.title)
+    TextView title;
+    @BindView(R.id.menu)
+    ImageView menu;
     @BindView(R.id.device_id)
     TextView deviceId;
     @BindView(R.id.read_card)
@@ -58,9 +59,7 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
     @BindView(R.id.commit)
     TextView commit;
 
-    private String title;
-    private String bh;
-    private boolean enableNfc = false;
+    private DeviceEntity deviceEntity;
     private AlertDialog alertDialog;
 
     private List<LocalMedia> choosePictures = new ArrayList<>();
@@ -69,63 +68,49 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
     private String romoteImageName;     //图片远程服务器的名称 123.jpg
     private String localPath;   //图片本地的地址
 
-    public static UseRecordFragment getInstance(String title, String bh) {
-        UseRecordFragment useRecordFragment = new UseRecordFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(IntentFlag.TITLE, title);
-        bundle.putString(IntentFlag.BH, bh);
-        useRecordFragment.setArguments(bundle);
-        return useRecordFragment;
+    @Override
+    public void getNfcData(String nfcString) {
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
+        nfcEnable = false;
+        //读取设备自编码和设备名称使用井号
+        getDeviceDataById(nfcString);
     }
 
     @Override
-    public View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_use_record, container, false);
+    public void initView() {
+        setContentView(R.layout.activity_device_move);
     }
 
     @Override
     public void initData() {
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            title = bundle.getString(IntentFlag.TITLE);
-            bh = bundle.getString(IntentFlag.BH);
-            deviceId.setText(bh);
-        }
+        title.setText(getResources().getString(R.string.device_move));
+        back.setVisibility(View.VISIBLE);
+
+        back.setOnClickListener(this);
+        readCard.setOnClickListener(this);
+        choosePicture.setOnClickListener(this);
+        recordImage.setOnClickListener(this);
+        commit.setOnClickListener(this);
     }
 
     @Override
     public void initOperation() {
-        readCard.setOnClickListener(this);
-        choosePicture.setOnClickListener(this);
-        commit.setOnClickListener(this);
-
-        alertDialog = new AlertDialog.Builder(getActivity())
+        alertDialog = new AlertDialog.Builder(mActivity)
                 .setTitle("")
                 .setMessage(getResources().getString(R.string.please_nfc))
                 .create();
     }
 
-    /**
-     * 获取到nfc的信息
-     *
-     * @param nfcString
-     */
-    public void getNfcData(String nfcString) {
-        if (alertDialog != null && alertDialog.isShowing()) {
-            alertDialog.dismiss();
-        }
-        if (enableNfc) {
-
-        }
-        enableNfc = false;
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.back:
+                finish();
+                break;
             case R.id.read_card:
-                ((NFCBaseActivity) getActivity()).nfcEnable = true;
-                enableNfc = true;
+                nfcEnable = true;
                 alertDialog.show();
                 break;
             case R.id.choose_picture:
@@ -142,6 +127,44 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
     }
 
     /**
+     * 通过扫描到的id号获取设备名称，自编码，使用井号
+     *
+     * @param id
+     */
+    private void getDeviceDataById(String id) {
+        if (StringUtils.isEmpty(id)) {
+            return;
+        }
+        DBManager.dbDeal(DBManager.SELECT)
+                .sql(SqlUrl.GetDeviceByID)
+                .params(new String[]{id, id, id})
+                .clazz(DeviceEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+                        showProgressDialog(getResources().getString(R.string.loading_device));
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        alert(err);
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        dismissProgressDialog();
+                        if (result != null && result.size() != 0) {
+                            deviceEntity = (DeviceEntity) result.get(0);
+                            deviceId.setText(deviceEntity.getBH());
+                        } else {
+                            alert(getResources().getString(R.string.no_data));
+                        }
+                    }
+                });
+    }
+
+    /**
      * 开始提交数据
      */
     private void upload() {
@@ -149,8 +172,8 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
             alert(R.string.please_choose_image);
             return;
         }
-        if (StringUtils.isEmpty(bh)) {
-            alert(R.string.get_bh_faild);
+        if (deviceEntity == null || StringUtils.isEmpty(deviceEntity.getBH())) {
+            alert(R.string.please_first_get_device);
             return;
         }
         if (StringUtils.isEmpty(duihao.getText().toString())) {
@@ -167,9 +190,9 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
     private void updataImage() {
         localPath = choosePictures.get(0).getCompressPath();
         imageType = localPath.substring(localPath.lastIndexOf("."));
-        romoteImageName = mActivity.userData.getUSERID() + bh + System.currentTimeMillis() + imageType;
+        romoteImageName = userData.getUSERID() + deviceEntity.getBH() + System.currentTimeMillis() + imageType;
         FtpManager.getInstance().uploadFile(localPath,
-                Config.RECORD_PATH, romoteImageName, new FtpCallBack() {
+                Config.MOVE_PATH, romoteImageName, new FtpCallBack() {
                     @Override
                     public void ftpStart() {
                         showProgressDialog(getResources().getString(R.string.uploading_image));
@@ -191,7 +214,7 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
     }
 
     private void deletImage() {
-        String path = Config.RECORD_PATH + romoteImageName;
+        String path = Config.MOVE_PATH + romoteImageName;
         if (StringUtils.isEmpty(path)) {
             return;
         }
@@ -243,9 +266,9 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
      */
     private void insertRecord() {
         DBManager.dbDeal(DBManager.EVENT_INSERT)
-                .sql(SqlUrl.ADD_RECORD)
-                .params(new Object[]{title, bh, duihao.getText().toString(), jinghao.getText().toString(),
-                        new Date(new java.util.Date().getTime()), mActivity.userData.getUSERID()})
+                .sql(SqlUrl.ADD_MOVE)
+                .params(new Object[]{deviceEntity.getBH(), duihao.getText().toString(), jinghao.getText().toString(),
+                        new Date(new java.util.Date().getTime()), userData.getUSERID()})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {
@@ -313,7 +336,7 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
         }
         DBManager.dbDeal(DBManager.EVENT_INSERT)
                 .sql(SqlUrl.INSERT_IAMGE)
-                .params(new String[]{SBBH, romoteImageName, fileSize, imagePath, imageType, Config.doc_sbjlzl})
+                .params(new String[]{SBBH, romoteImageName, fileSize, imagePath, imageType, Config.doc_sbzc})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {
@@ -350,7 +373,7 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
 
                     @Override
                     public void onResponse(List result) {
-                        alert(R.string.commit_record_faild);
+                        alert(R.string.device_move_faild);
                     }
                 });
     }
@@ -365,14 +388,15 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
 
                     @Override
                     public void onError(String err) {
-                        alert(R.string.commit_record_faild);
+                        alert(R.string.device_move_faild);
                         dismissProgressDialog();
                     }
 
                     @Override
                     public void onResponse(List result) {
-                        alert(R.string.commit_record_success);
+                        alert(R.string.device_move_success);
                         dismissProgressDialog();
+                        finish();
                     }
                 });
     }
@@ -390,7 +414,7 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         PictureSelectUtils.clearPictureSelectorCache(mActivity);
     }

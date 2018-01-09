@@ -36,7 +36,8 @@
         android:text="@string/duihao"
         android:gravity="center"
         android:textSize="@dimen/content_text_size"
-        android:textColor="@color/text_content_color"/>
+        android:textColor="@color/text_content_color"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/jinghao"
@@ -47,7 +48,8 @@
         android:text="@string/jinghao"
         android:gravity="center"
         android:textSize="@dimen/content_text_size"
-        android:textColor="@color/text_content_color"/>
+        android:textColor="@color/text_content_color"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/check_result"
