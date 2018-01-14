@@ -173,10 +173,10 @@ public class LoginActivity extends MyBaseActivity implements View.OnClickListene
                                 startActivity(intent);
                                 finish();
                             } else {
-                                alert(R.string.no_permission);
+                                alert(R.string.no_permission_xc);
                             }
                         } else {
-                            alert(R.string.no_permission);
+                            alert(R.string.no_permission_xc);
                         }
                         dismissProgressDialog();
                     }

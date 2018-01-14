@@ -91,6 +91,12 @@
             android:label="@string/device_inspection"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
+        <activity android:name=".ui.InspectionHistoryDetailActivity"
+            android:label="@string/record_failed_detail"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.MoveHistoryDetailActivity"
+            android:label="@string/record_check_result"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

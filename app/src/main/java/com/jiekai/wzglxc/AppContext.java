@@ -9,9 +9,13 @@ import android.view.View;
 
 import com.jiekai.wzglxc.config.Config;
 import com.jiekai.wzglxc.config.SqlUrl;
+import com.jiekai.wzglxc.entity.DeviceInspectionEntity;
+import com.jiekai.wzglxc.entity.DeviceUnCheckEntity;
 import com.jiekai.wzglxc.entity.DevicelogEntity;
+import com.jiekai.wzglxc.entity.DevicemoveEntity;
 import com.jiekai.wzglxc.ui.RecordHistoryActivity;
 import com.jiekai.wzglxc.utils.PictureSelectUtils;
+import com.jiekai.wzglxc.utils.StringUtils;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
 import com.jiekai.wzglxc.utils.dbutils.DbDeal;
@@ -59,7 +63,10 @@ public class AppContext extends Application {
      * @param activity
      * @param userId
      */
-    public static void getUnCheckedData(final Activity activity, String userId) {
+    public static void getUnCheckedData(final Activity activity, final String userId) {
+        if (StringUtils.isEmpty(userId)) {
+            return;
+        }
         DBManager.dbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GET_RECORD_CHECK_LIST)
                 .params(new String[]{userId})
@@ -78,25 +85,82 @@ public class AppContext extends Application {
                     @Override
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
-                            final AlertDialog alertDialog = new AlertDialog.Builder(activity)
-                                    .setTitle("提示").create();
-                            alertDialog.setMessage("您有上传的信息没有审核通过，点击确定查看详情。");
-                            alertDialog.setButton(BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    alertDialog.dismiss();
-                                    activity.startActivity(new Intent(activity, RecordHistoryActivity.class));
-                                }
-                            });
-                            alertDialog.setButton(BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                            showUnCheckDialog(activity);
+                            return;
+                        }
+                        getData(activity, userId);
+                    }
+                });
+    }
 
-                                }
-                            });
-                            alertDialog.show();
+    private static void getData(final Activity activity, final String userId) {
+        DBManager.NewDbDeal(DBManager.SELECT)
+                .sql(SqlUrl.GET_MOVE_CHECK_LIST)
+                .params(new String[]{userId})
+                .clazz(DevicemoveEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        if (result != null && result.size() != 0) {
+                            showUnCheckDialog(activity);
+                            return;
+                        }
+                        getDataThree(activity, userId);
+                    }
+                });
+    }
+
+    private static void getDataThree(final Activity activity, String userId) {
+        DBManager.NewDbDeal(DBManager.SELECT)
+                .sql(SqlUrl.GET_INSPECTION_CHECK_LIST)
+                .params(new String[]{userId})
+                .clazz(DeviceInspectionEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        if (result != null && result.size() != 0) {
+                            showUnCheckDialog(activity);
                         }
                     }
                 });
+    }
+    private static void showUnCheckDialog(final Activity activity) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(activity)
+                .setTitle("提示").create();
+        alertDialog.setMessage("您有上传的信息没有审核通过，点击确定查看详情。");
+        alertDialog.setButton(BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+                activity.startActivity(new Intent(activity, RecordHistoryActivity.class));
+            }
+        });
+        alertDialog.setButton(BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        alertDialog.show();
     }
 }

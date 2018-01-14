@@ -13,6 +13,7 @@ import com.jiekai.wzglxc.adapter.RecordHistoryAdapter;
 import com.jiekai.wzglxc.config.Config;
 import com.jiekai.wzglxc.config.IntentFlag;
 import com.jiekai.wzglxc.config.SqlUrl;
+import com.jiekai.wzglxc.entity.DeviceInspectionEntity;
 import com.jiekai.wzglxc.entity.DeviceUnCheckEntity;
 import com.jiekai.wzglxc.entity.DevicelogEntity;
 import com.jiekai.wzglxc.entity.DevicemoveEntity;
@@ -44,6 +45,7 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
     private View headerView;
     private RecordHistoryAdapter adapter;
     private List<DeviceUnCheckEntity> dataList = new ArrayList<>();
+    private int selectNum;
 
     @Override
     public void initView() {
@@ -80,16 +82,36 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        DevicelogEntity entity = (DevicelogEntity) parent.getItemAtPosition(position);
+        DeviceUnCheckEntity entity = (DeviceUnCheckEntity) parent.getItemAtPosition(position);
         if (entity != null) {
-            Intent intent = new Intent(mActivity, RecordHistoryDetailActivity.class);
-            intent.putExtra(IntentFlag.DATA, entity);
-            startActivity(intent);
+            switch (entity.getType()) {
+                case Config.TYPE_JL:
+                    Intent intent = new Intent(mActivity, RecordHistoryDetailActivity.class);
+                    intent.putExtra(IntentFlag.DATA, (DevicelogEntity) entity.getData());
+                    startActivity(intent);
+                    break;
+                case Config.TYPE_MOVE:
+                    Intent intent_move = new Intent(mActivity, MoveHistoryDetailActivity.class);
+                    intent_move.putExtra(IntentFlag.DATA, (DevicemoveEntity) entity.getData());
+                    startActivity(intent_move);
+                    break;
+                case Config.TYPE_INSPECTION:
+                    Intent inspection = new Intent(mActivity, InspectionHistoryDetailActivity.class);
+                    inspection.putExtra(IntentFlag.DATA, (DeviceInspectionEntity) entity.getData());
+                    startActivity(inspection);
+                    break;
+            }
         }
     }
 
     private void getData() {
-        DBManager.dbDeal(DBManager.SELECT)
+        if (dataList != null) {
+            dataList.clear();
+        } else {
+            dataList = new ArrayList<>();
+        }
+        selectNum = 0;
+        DBManager.NewDbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GET_RECORD_CHECK_LIST)
                 .params(new String[]{userData.getUSERID()})
                 .clazz(DevicelogEntity.class)
@@ -108,7 +130,6 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                     @Override
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
-                            dataList.clear();
                             for (int i=0; i<result.size(); i++) {
                                 DevicelogEntity devicelogEntity = (DevicelogEntity) result.get(i);
                                 DeviceUnCheckEntity deviceUnCheckEntity = new DeviceUnCheckEntity();
@@ -121,14 +142,11 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                             }
                             adapter.notifyDataSetChanged();
                             setHeaderViewVisible(View.VISIBLE);
-                        } else {
-                            alert(R.string.your_all_check_pass);
-                            setHeaderViewVisible(View.GONE);
                         }
-                        dismissProgressDialog();
+                        allSelectFinish();
                     }
                 });
-        DBManager.dbDeal(DBManager.SELECT)
+        DBManager.NewDbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GET_MOVE_CHECK_LIST)
                 .params(new String[]{userData.getUSERID()})
                 .clazz(DevicemoveEntity.class)
@@ -140,31 +158,77 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
 
                     @Override
                     public void onError(String err) {
-
+                        alert(err);
+                        dismissProgressDialog();
                     }
 
                     @Override
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
-                            dataList.clear();
                             for (int i=0; i<result.size(); i++) {
                                 DevicemoveEntity devicemoveEntity = (DevicemoveEntity) result.get(i);
                                 DeviceUnCheckEntity deviceUnCheckEntity = new DeviceUnCheckEntity();
                                 deviceUnCheckEntity.setType(Config.TYPE_MOVE);
                                 deviceUnCheckEntity.setID(devicemoveEntity.getSBBH());
-                                deviceUnCheckEntity.setJLZL("设备转场");
+                                deviceUnCheckEntity.setJLZL(getResources().getString(R.string.device_move));
                                 deviceUnCheckEntity.setYJ(devicemoveEntity.getSHYJ());
                                 deviceUnCheckEntity.setData(devicemoveEntity);
                                 dataList.add(deviceUnCheckEntity);
                             }
                             adapter.notifyDataSetChanged();
                             setHeaderViewVisible(View.VISIBLE);
-                        } else {
-                            alert(R.string.your_all_check_pass);
-                            setHeaderViewVisible(View.GONE);
                         }
+                        allSelectFinish();
                     }
                 });
+        DBManager.NewDbDeal(DBManager.SELECT)
+                .sql(SqlUrl.GET_INSPECTION_CHECK_LIST)
+                .params(new String[]{userData.getUSERID()})
+                .clazz(DeviceInspectionEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        alert(err);
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        if (result != null && result.size() != 0) {
+                            for (int i=0; i<result.size(); i++) {
+                                DeviceInspectionEntity devicemoveEntity = (DeviceInspectionEntity) result.get(i);
+                                DeviceUnCheckEntity deviceUnCheckEntity = new DeviceUnCheckEntity();
+                                deviceUnCheckEntity.setType(Config.TYPE_INSPECTION);
+                                deviceUnCheckEntity.setID(devicemoveEntity.getSBBH());
+                                deviceUnCheckEntity.setJLZL(getResources().getString(R.string.device_inspection));
+                                deviceUnCheckEntity.setYJ(devicemoveEntity.getSHYJ());
+                                deviceUnCheckEntity.setData(devicemoveEntity);
+                                dataList.add(deviceUnCheckEntity);
+                            }
+                            adapter.notifyDataSetChanged();
+                            setHeaderViewVisible(View.VISIBLE);
+                        }
+                        allSelectFinish();
+                    }
+                });
+    }
+
+    private void allSelectFinish() {
+        selectNum++;
+        if (selectNum >= 3) {
+            if (adapter != null ){
+                if (adapter.dataList == null || adapter.dataList.size() == 0) {
+                    alert(R.string.your_all_check_pass);
+                    setHeaderViewVisible(View.GONE);
+                }
+            }
+            dismissProgressDialog();
+        }
     }
 
     private void setHeaderViewVisible(int visible) {

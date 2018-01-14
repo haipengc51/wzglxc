@@ -192,7 +192,9 @@ public class DbDeal extends AsynInterface {
     private void commitEvent(AsynCallBack asynCallBack) {
         try {
             if (connection == null || connection.isClosed()) {
-                connection.close();
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
                 asynCallBack.onError("数据库连接失败");
                 return;
             }
@@ -216,7 +218,9 @@ public class DbDeal extends AsynInterface {
     private void rollbackEvent(AsynCallBack asynCallBack) {
         try {
             if (connection == null || connection.isClosed()) {
-                connection.close();
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
                 asynCallBack.onError("数据库连接失败");
                 return;
             }

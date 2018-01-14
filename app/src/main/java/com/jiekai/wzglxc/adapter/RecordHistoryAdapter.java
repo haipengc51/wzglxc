@@ -7,7 +7,11 @@ import android.widget.TextView;
 
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.adapter.base.MyBaseAdapter;
+import com.jiekai.wzglxc.config.Config;
+import com.jiekai.wzglxc.entity.DeviceInspectionEntity;
+import com.jiekai.wzglxc.entity.DeviceUnCheckEntity;
 import com.jiekai.wzglxc.entity.DevicelogEntity;
+import com.jiekai.wzglxc.entity.DevicemoveEntity;
 
 import java.util.List;
 
@@ -36,18 +40,59 @@ public class RecordHistoryAdapter extends MyBaseAdapter {
     @Override
     public View buildData(int position, View cellView, BusinessHolder viewHolder) {
         MyViewHolder myViewHolder = (MyViewHolder) viewHolder;
-        DevicelogEntity item = (DevicelogEntity) dataList.get(position);
-        myViewHolder.recordType.setText(getDataIfNull(item.getJLZLMC()));
-        myViewHolder.deviceId.setText(getDataIfNull(item.getSBBH()));
-        myViewHolder.duihao.setText(getDataIfNull(item.getDH()));
-        myViewHolder.jinghao.setText(getDataIfNull(item.getJH()));
-        String shyj = item.getSHYJ();
-        if ("1".equals(shyj)) {
-            myViewHolder.checkResult.setText("通过");
-        } else if ("0".equals(shyj)) {
-            myViewHolder.checkResult.setText("未通过");
-        } else {
-            myViewHolder.checkResult.setText("待审核");
+        DeviceUnCheckEntity item = (DeviceUnCheckEntity) dataList.get(position);
+        switch (item.getType()) {
+            case Config.TYPE_JL:    //记录
+            {
+                DevicelogEntity devicelogEntity = (DevicelogEntity) item.getData();
+                myViewHolder.recordType.setText(getDataIfNull(devicelogEntity.getJLZLMC()));
+                myViewHolder.deviceId.setText(getDataIfNull(devicelogEntity.getSBBH()));
+                myViewHolder.duihao.setText(getDataIfNull(devicelogEntity.getDH()));
+                myViewHolder.jinghao.setText(getDataIfNull(devicelogEntity.getJH()));
+                String shyj = devicelogEntity.getSHYJ();
+                if ("1".equals(shyj)) {
+                    myViewHolder.checkResult.setText("通过");
+                } else if ("0".equals(shyj)) {
+                    myViewHolder.checkResult.setText("未通过");
+                } else {
+                    myViewHolder.checkResult.setText("待审核");
+                }
+            }
+                break;
+            case Config.TYPE_MOVE:      //转场
+            {
+                DevicemoveEntity devicemoveEntity = (DevicemoveEntity) item.getData();
+                myViewHolder.recordType.setText(getDataIfNull(item.getJLZL()));
+                myViewHolder.deviceId.setText(getDataIfNull(devicemoveEntity.getSBBH()));
+                myViewHolder.duihao.setText(getDataIfNull(devicemoveEntity.getDH()));
+                myViewHolder.jinghao.setText(getDataIfNull(devicemoveEntity.getJH()));
+                String shyj = devicemoveEntity.getSHYJ();
+                if ("1".equals(shyj)) {
+                    myViewHolder.checkResult.setText("通过");
+                } else if ("0".equals(shyj)) {
+                    myViewHolder.checkResult.setText("未通过");
+                } else {
+                    myViewHolder.checkResult.setText("待审核");
+                }
+            }
+                break;
+            case Config.TYPE_INSPECTION:        //巡检
+            {
+                DeviceInspectionEntity devicemoveEntity = (DeviceInspectionEntity) item.getData();
+                myViewHolder.recordType.setText(getDataIfNull(item.getJLZL()));
+                myViewHolder.deviceId.setText(getDataIfNull(devicemoveEntity.getSBBH()));
+//                myViewHolder.duihao.setText(getDataIfNull(devicemoveEntity.getDH()));
+//                myViewHolder.jinghao.setText(getDataIfNull(devicemoveEntity.getJH()));
+                String shyj = devicemoveEntity.getSHYJ();
+                if ("1".equals(shyj)) {
+                    myViewHolder.checkResult.setText("通过");
+                } else if ("0".equals(shyj)) {
+                    myViewHolder.checkResult.setText("未通过");
+                } else {
+                    myViewHolder.checkResult.setText("待审核");
+                }
+            }
+                break;
         }
         return null;
     }

@@ -47,7 +47,7 @@ public class WelcomActivity extends MyBaseActivity {
                 isTime = true;
                 changeUi();
             }
-        }, 2000);
+        }, 3000);
 
         if (isLogin) {
             login(userData.getUSERID(), userData.getPASSWORD());
