@@ -2,7 +2,6 @@ package com.jiekai.wzglxc.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by LaoWu on 2017/12/16.
@@ -157,6 +155,46 @@ public class DeviceOutputActivity extends NFCBaseActivity implements View.OnClic
         DBManager.dbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GetDeviceByID)
                 .params(new String[]{id, id, id})
+                .clazz(DeviceEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+                        showProgressDialog(getResources().getString(R.string.loading_device));
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        alert(err);
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        dismissProgressDialog();
+                        if (result != null && result.size() != 0) {
+                            deviceEntity = (DeviceEntity) result.get(0);
+                            deviceName.setText(deviceEntity.getMC());
+                            deviceId.setText(deviceEntity.getBH());
+                            checkDevice();
+                        } else {
+                            alert(getResources().getString(R.string.no_data));
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 通过二维码获取设备名称，自编码，使用井号
+     *
+     * @param id
+     */
+    private void getDeviceDataBySAOMA(String id) {
+        if (StringUtils.isEmpty(id)) {
+            return;
+        }
+        DBManager.dbDeal(DBManager.SELECT)
+                .sql(SqlUrl.GetDeviceBySAOMA)
+                .params(new String[]{id})
                 .clazz(DeviceEntity.class)
                 .execut(new DbCallBack() {
                     @Override
@@ -492,7 +530,7 @@ public class DeviceOutputActivity extends NFCBaseActivity implements View.OnClic
             }
         } else if (requestCode == Constants.SCAN && resultCode == RESULT_OK) {
             String code = data.getExtras().getString("result");
-            getDeviceDataById(code);
+            getDeviceDataBySAOMA(code);
         }
     }
 
@@ -500,12 +538,5 @@ public class DeviceOutputActivity extends NFCBaseActivity implements View.OnClic
     protected void onDestroy() {
         super.onDestroy();
         PictureSelectUtils.clearPictureSelectorCache(DeviceOutputActivity.this);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 }

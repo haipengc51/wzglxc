@@ -3,7 +3,6 @@ package com.jiekai.wzglxc.ui;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +18,6 @@ import com.jiekai.wzglxc.adapter.UseRecordAdapter;
 import com.jiekai.wzglxc.config.Constants;
 import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DevicelogsortEntity;
-import com.jiekai.wzglxc.entity.PankuDataNumEntity;
 import com.jiekai.wzglxc.entity.RecordFragmentEntity;
 import com.jiekai.wzglxc.entity.RecordRecentIdEntity;
 import com.jiekai.wzglxc.test.NFCBaseActivity;
@@ -27,7 +25,6 @@ import com.jiekai.wzglxc.ui.popup.DeviceCodePopup;
 import com.jiekai.wzglxc.utils.StringUtils;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
-import com.jiekai.wzglxc.utils.localDbUtils.PanKuDataNumColumn;
 import com.jiekai.wzglxc.utils.localDbUtils.RecordRecentIDColumn;
 import com.jiekai.wzglxc.utils.zxing.CaptureActivity;
 
@@ -35,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by laowu on 2018/1/2.
@@ -224,6 +220,56 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
                 });
     }
 
+    /**
+     * 通过id获取记录列表
+     *
+     * @param cardId
+     */
+    private void getRecordListBySAOMA(String cardId) {
+        if (StringUtils.isEmpty(cardId)) {
+            alert(R.string.get_id_err);
+            return;
+        }
+        DBManager.dbDeal(DBManager.SELECT)
+                .sql(SqlUrl.Get_Record_List_by_SAOMA)
+                .params(new String[]{cardId})
+                .clazz(DevicelogsortEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+                        showProgressDialog(getResources().getString(R.string.loading_data));
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        alert(err);
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        if (result != null && result.size() != 0) {
+                            titleList.clear();
+                            for (int i = 0; i < result.size(); i++) {
+                                RecordFragmentEntity recordFragmentEntity = new RecordFragmentEntity();
+                                DevicelogsortEntity entity = (DevicelogsortEntity) result.get(i);
+                                recordFragmentEntity.setTitle(entity.getJLZLMC());
+                                recordFragmentEntity.setSBBH(entity.getBH());
+                                titleList.add(recordFragmentEntity);
+                            }
+                            titleAdapter.notifyDataSetChanged();
+                            viewPagerAdapter.notifyDataSetChanged();
+                            buttonLayout.setVisibility(View.GONE);
+                            recordView.setVisibility(View.VISIBLE);
+                            addRecentId(((DevicelogsortEntity)result.get(0)).getBH());
+                        } else {
+                            alert(R.string.no_data);
+                        }
+                        dismissProgressDialog();
+                    }
+                });
+    }
+
     private void addRecentId(String bh) {
         String sql = "SELECT * FROM " + RecordRecentIDColumn.TABLE_NAME + " WHERE " +
                 RecordRecentIDColumn.BH + " = ? ";
@@ -258,7 +304,7 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.SCAN && resultCode == RESULT_OK) {
             String code = data.getExtras().getString("result");
-            getRecordList(code);
+            getRecordListBySAOMA(code);
         }
     }
 
