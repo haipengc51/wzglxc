@@ -38,16 +38,29 @@
             android:textColor="@color/text_content_color"
             android:textSize="@dimen/content_text_size"/>
 
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_height"
+        android:layout_marginTop="@dimen/marginTop20"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/read_card"
             style="@style/little_button_style"
-            android:layout_marginRight="@dimen/marginTop20"
-            android:layout_marginLeft="@dimen/marginTop10"
-            android:layout_gravity="center_vertical"
-            android:text="@string/read_card"
-            android:visibility="visible"/>
+            android:layout_marginLeft="@dimen/marginTop20"
+            android:layout_alignParentLeft="true"
+            android:text="@string/read_card"/>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/sao_ma"
+            style="@style/little_button_style"
+            android:layout_marginRight="@dimen/marginTop20"
+            android:layout_alignParentRight="true"
+            android:text="@string/recongnize_code"/>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

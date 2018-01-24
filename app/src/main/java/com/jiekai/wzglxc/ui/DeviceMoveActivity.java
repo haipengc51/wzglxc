@@ -2,7 +2,6 @@ package com.jiekai.wzglxc.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +23,7 @@ import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
 import com.jiekai.wzglxc.utils.ftputils.FtpCallBack;
 import com.jiekai.wzglxc.utils.ftputils.FtpManager;
+import com.jiekai.wzglxc.utils.zxing.CaptureActivity;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.entity.LocalMedia;
 
@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by laowu on 2018/1/9.
@@ -61,6 +60,8 @@ public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickL
     TextView commit;
     @BindView(R.id.beizhu)
     EditText beizhu;
+    @BindView(R.id.sao_ma)
+    TextView saoMa;
 
     private DeviceEntity deviceEntity;
     private AlertDialog alertDialog;
@@ -93,6 +94,7 @@ public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickL
 
         back.setOnClickListener(this);
         readCard.setOnClickListener(this);
+        saoMa.setOnClickListener(this);
         choosePicture.setOnClickListener(this);
         recordImage.setOnClickListener(this);
         commit.setOnClickListener(this);
@@ -115,6 +117,9 @@ public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickL
             case R.id.read_card:
                 nfcEnable = true;
                 alertDialog.show();
+                break;
+            case R.id.sao_ma:
+                startActivityForResult(new Intent(mActivity, CaptureActivity.class), Constants.SCAN);
                 break;
             case R.id.choose_picture:
                 PictureSelectUtils.choosePicture(PictureSelector.create(this), Constants.REQUEST_PICTURE);
@@ -141,6 +146,43 @@ public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickL
         DBManager.dbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GetDeviceByID)
                 .params(new String[]{id, id, id})
+                .clazz(DeviceEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+                        showProgressDialog(getResources().getString(R.string.loading_device));
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        alert(err);
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        dismissProgressDialog();
+                        if (result != null && result.size() != 0) {
+                            deviceEntity = (DeviceEntity) result.get(0);
+                            deviceId.setText(deviceEntity.getBH());
+                        } else {
+                            alert(getResources().getString(R.string.no_data));
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 通过二维码获取设备名称，自编码，使用井号
+     * @param id
+     */
+    private void getDeviceDataBySAOMA(String id) {
+        if (StringUtils.isEmpty(id)) {
+            return;
+        }
+        DBManager.dbDeal(DBManager.SELECT)
+                .sql(SqlUrl.GetDeviceBySAOMA)
+                .params(new String[]{id})
                 .clazz(DeviceEntity.class)
                 .execut(new DbCallBack() {
                     @Override
@@ -413,6 +455,9 @@ public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickL
             if (choosePictures != null && choosePictures.size() != 0) {
                 String currentDevicePicturePath = choosePictures.get(0).getCompressPath();
                 GlidUtils.displayImage(mActivity, currentDevicePicturePath, recordImage);
+            } else if (requestCode == Constants.SCAN && resultCode == RESULT_OK) {
+                String code = data.getExtras().getString("result");
+                getDeviceDataBySAOMA(code);
             }
         }
     }
@@ -421,12 +466,5 @@ public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickL
     protected void onDestroy() {
         super.onDestroy();
         PictureSelectUtils.clearPictureSelectorCache(mActivity);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 }
