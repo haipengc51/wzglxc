@@ -15,6 +15,7 @@
  */
 package com.jiekai.wzglxc.utils.zxing;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -22,6 +23,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -37,6 +39,7 @@ import android.widget.TextView;
 import com.google.zxing.Result;
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
+import com.jiekai.wzglxc.utils.PermissionUtils;
 import com.jiekai.wzglxc.utils.zxing.camera.CameraManager;
 import com.jiekai.wzglxc.utils.zxing.decode.DecodeThread;
 import com.jiekai.wzglxc.utils.zxing.utils.BeepManager;
@@ -59,6 +62,7 @@ import java.lang.reflect.Field;
 public final class CaptureActivity extends MyBaseActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
+    private static final int RequestPermission = 100;
 
     private ImageView back;
     private TextView title;
@@ -133,6 +137,8 @@ public final class CaptureActivity extends MyBaseActivity implements SurfaceHold
         animation.setRepeatCount(-1);
         animation.setRepeatMode(Animation.RESTART);
         scanLine.startAnimation(animation);
+
+        checkPermission();
     }
 
     @Override
@@ -333,5 +339,23 @@ public final class CaptureActivity extends MyBaseActivity implements SurfaceHold
             e.printStackTrace();
         }
         return 0;
+    }
+    private void checkPermission() {
+        boolean isCamare = PermissionUtils.checkPermission(this, Manifest.permission.CAMERA);
+        if (!isCamare) {
+            PermissionUtils.requestPermission(CaptureActivity.this, RequestPermission, Manifest.permission.CAMERA);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == RequestPermission) {
+            if (!PermissionUtils.checkPermission(this, Manifest.permission.CAMERA)) {
+                alert(R.string.ungree_permission);
+                finish();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

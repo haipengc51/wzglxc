@@ -2,6 +2,7 @@ package com.jiekai.wzglxc.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DeviceEntity;
 import com.jiekai.wzglxc.entity.LastInsertIdEntity;
 import com.jiekai.wzglxc.test.NFCBaseActivity;
+import com.jiekai.wzglxc.utils.CommonUtils;
 import com.jiekai.wzglxc.utils.FileSizeUtils;
 import com.jiekai.wzglxc.utils.GlidUtils;
 import com.jiekai.wzglxc.utils.PictureSelectUtils;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by laowu on 2018/1/9.
@@ -56,6 +59,8 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
     EditText jinghao;
     @BindView(R.id.commit)
     TextView commit;
+    @BindView(R.id.beizhu)
+    EditText beizhu;
 
     private DeviceEntity deviceEntity;
     private AlertDialog alertDialog;
@@ -257,7 +262,8 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
     private void insertRecord() {
         DBManager.dbDeal(DBManager.EVENT_INSERT)
                 .sql(SqlUrl.ADD_INSPECTION)
-                .params(new Object[]{deviceEntity.getBH(), new Date(new java.util.Date().getTime()), userData.getUSERID()})
+                .params(new Object[]{deviceEntity.getBH(), new Date(new java.util.Date().getTime()), userData.getUSERID(),
+                        CommonUtils.getDataIfNull(beizhu.getText().toString())})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {
@@ -406,5 +412,12 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
     protected void onDestroy() {
         super.onDestroy();
         PictureSelectUtils.clearPictureSelectorCache(mActivity);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

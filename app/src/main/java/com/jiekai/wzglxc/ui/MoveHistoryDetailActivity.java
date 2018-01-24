@@ -12,7 +12,6 @@ import com.jiekai.wzglxc.config.Constants;
 import com.jiekai.wzglxc.config.IntentFlag;
 import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DevicedocEntity;
-import com.jiekai.wzglxc.entity.DevicelogEntity;
 import com.jiekai.wzglxc.entity.DevicemoveEntity;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.jiekai.wzglxc.utils.CommonUtils;
@@ -63,6 +62,8 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
     TextView checkRemark;
     @BindView(R.id.recommit)
     TextView recommit;
+    @BindView(R.id.beizhu)
+    EditText beizhu;
 
     private DevicemoveEntity currentDatas;
 
@@ -96,6 +97,7 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
             deviceId.setText(CommonUtils.getDataIfNull(currentDatas.getSBBH()));
             duihao.setText(CommonUtils.getDataIfNull(currentDatas.getDH()));
             jinghao.setText(CommonUtils.getDataIfNull(currentDatas.getJH()));
+            beizhu.setText(CommonUtils.getDataIfNull(currentDatas.getBZ()));
             checkRemark.setText(CommonUtils.getDataIfNull(currentDatas.getSHBZ()));
             showCommitImage(currentDatas.getID());
         } else {
@@ -234,7 +236,8 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
         DBManager.dbDeal(DBManager.EVENT_UPDATA)
                 .sql(SqlUrl.UPDATE_MOVE)
                 .params(new Object[]{duihao.getText().toString(), jinghao.getText().toString(),
-                        new Date(new java.util.Date().getTime()), userData.getUSERID(), currentDatas.getID()})
+                        new Date(new java.util.Date().getTime()), userData.getUSERID(),
+                        CommonUtils.getDataIfNull(beizhu.getText().toString()), currentDatas.getID()})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {

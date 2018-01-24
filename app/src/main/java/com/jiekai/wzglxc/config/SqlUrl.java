@@ -126,7 +126,7 @@ public class SqlUrl {
     /**
      * 插入设备报废信息
      */
-    public static final String ADD_DEVICE_SCRAP = "INSERT INTO devicescrap (SBBH, BFSJ, BFR) VALUES (?, ?, ?)";
+    public static final String ADD_DEVICE_SCRAP = "INSERT INTO devicescrap (SBBH, BFSJ, BFR, BZ) VALUES (?, ?, ?, ?)";
     /**
      * 查找报废设备
      */
@@ -224,30 +224,30 @@ public class SqlUrl {
     /**
      * 添加一条记录信息--现场添加记录信息
      */
-    public static final String ADD_RECORD = "INSERT INTO devicelog (JLZLMC, SBBH, DH, JH, JLSJ, CZR) VALUES (?, ?, ?, ?, ?, ?)";
+    public static final String ADD_RECORD = "INSERT INTO devicelog (JLZLMC, SBBH, DH, JH, JLSJ, CZR, BZ) VALUES (?, ?, ?, ?, ?, ?, ?)";
     /**
      * 更新记录信息
      */
-    public static final String UPDATE_RECORD = "UPDATE devicelog SET DH = ?, JH =?, JLSJ = ?, CZR = ?," +
+    public static final String UPDATE_RECORD = "UPDATE devicelog SET DH = ?, JH =?, JLSJ = ?, CZR = ?, BZ = ?" +
             " SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE ID = ?";
     /**
      * 更新转场记录
      */
-    public static final String UPDATE_MOVE = "UPDATE devicemove SET DH = ?, JH =?, CZSJ = ?, CZR = ?," +
+    public static final String UPDATE_MOVE = "UPDATE devicemove SET DH = ?, JH =?, CZSJ = ?, CZR = ?, BZ = ?" +
             " SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE ID = ?";
     /**
      * 更新巡检记录
      */
-    public static final String UPDATE_INSPECTION = "UPDATE deviceinspection SET CZSJ = ?, CZR = ?," +
+    public static final String UPDATE_INSPECTION = "UPDATE deviceinspection SET CZSJ = ?, CZR = ?, BZ = ?" +
             " SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE ID = ?";
     /**
      * 添加转场记录
      */
-    public static final String ADD_MOVE = "INSERT INTO devicemove (SBBH, DH, JH, CZSJ, CZR) VALUES (?, ?, ?, ?, ?)";
+    public static final String ADD_MOVE = "INSERT INTO devicemove (SBBH, DH, JH, CZSJ, CZR, BZ) VALUES (?, ?, ?, ?, ?, ?)";
     /**
      * 添加巡检记录
      */
-    public static final String ADD_INSPECTION = "INSERT INTO deviceinspection (SBBH, CZSJ, CZR) VALUES (?, ?, ?)";
+    public static final String ADD_INSPECTION = "INSERT INTO deviceinspection (SBBH, CZSJ, CZR, BZ) VALUES (?, ?, ?, ?)";
     /**
      * 检查现场提交的记录的结果（列举所有没有通过审核的和没有审核的结果）
      */

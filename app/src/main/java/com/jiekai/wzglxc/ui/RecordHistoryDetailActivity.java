@@ -1,6 +1,7 @@
 package com.jiekai.wzglxc.ui;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,7 +14,6 @@ import com.jiekai.wzglxc.config.IntentFlag;
 import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DevicedocEntity;
 import com.jiekai.wzglxc.entity.DevicelogEntity;
-import com.jiekai.wzglxc.entity.LastInsertIdEntity;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.jiekai.wzglxc.utils.CommonUtils;
 import com.jiekai.wzglxc.utils.FileSizeUtils;
@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by LaoWu on 2018/1/5.
@@ -63,6 +64,8 @@ public class RecordHistoryDetailActivity extends MyBaseActivity implements View.
     TextView checkRemark;
     @BindView(R.id.recommit)
     TextView recommit;
+    @BindView(R.id.beizhu)
+    EditText beizhu;
 
     private DevicelogEntity currentDatas;
 
@@ -96,6 +99,7 @@ public class RecordHistoryDetailActivity extends MyBaseActivity implements View.
             deviceId.setText(CommonUtils.getDataIfNull(currentDatas.getSBBH()));
             duihao.setText(CommonUtils.getDataIfNull(currentDatas.getDH()));
             jinghao.setText(CommonUtils.getDataIfNull(currentDatas.getJH()));
+            beizhu.setText(CommonUtils.getDataIfNull(currentDatas.getBZ()));
             checkRemark.setText(CommonUtils.getDataIfNull(currentDatas.getSHBZ()));
             showCommitImage(currentDatas.getID());
         } else {
@@ -234,7 +238,8 @@ public class RecordHistoryDetailActivity extends MyBaseActivity implements View.
         DBManager.dbDeal(DBManager.EVENT_UPDATA)
                 .sql(SqlUrl.UPDATE_RECORD)
                 .params(new Object[]{duihao.getText().toString(), jinghao.getText().toString(),
-                        new Date(new java.util.Date().getTime()), userData.getUSERID(), currentDatas.getID()})
+                        new Date(new java.util.Date().getTime()), userData.getUSERID(),
+                        CommonUtils.getDataIfNull(beizhu.getText().toString()), currentDatas.getID()})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {
@@ -442,5 +447,12 @@ public class RecordHistoryDetailActivity extends MyBaseActivity implements View.
     protected void onDestroy() {
         super.onDestroy();
         PictureSelectUtils.clearPictureSelectorCache(mActivity);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

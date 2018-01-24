@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.config.Config;
@@ -19,6 +18,7 @@ import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.LastInsertIdEntity;
 import com.jiekai.wzglxc.test.NFCBaseActivity;
 import com.jiekai.wzglxc.ui.fragment.base.MyNFCBaseFragment;
+import com.jiekai.wzglxc.utils.CommonUtils;
 import com.jiekai.wzglxc.utils.FileSizeUtils;
 import com.jiekai.wzglxc.utils.GlidUtils;
 import com.jiekai.wzglxc.utils.PictureSelectUtils;
@@ -42,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by laowu on 2018/1/2.
  */
 
-public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClickListener{
+public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClickListener {
     @BindView(R.id.device_id)
     TextView deviceId;
     @BindView(R.id.read_card)
@@ -57,7 +57,8 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
     EditText jinghao;
     @BindView(R.id.commit)
     TextView commit;
-
+    @BindView(R.id.beizhu)
+    EditText beizhu;
     private String title;
     private String bh;
     private boolean enableNfc = false;
@@ -161,6 +162,12 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
             alert(R.string.please_input_jinghao);
             return;
         }
+        if (!StringUtils.isEmpty(beizhu.getText().toString())) {
+            if (beizhu.getText().toString().length() > 255) {
+                alert(R.string.beizhu_to_long);
+                return;
+            }
+        }
         updataImage();
     }
 
@@ -239,13 +246,14 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
     }
 
     /**
-     * 插入出库的数据库
+     * 插入记录的数据库
      */
     private void insertRecord() {
         DBManager.dbDeal(DBManager.EVENT_INSERT)
                 .sql(SqlUrl.ADD_RECORD)
                 .params(new Object[]{title, bh, duihao.getText().toString(), jinghao.getText().toString(),
-                        new Date(new java.util.Date().getTime()), mActivity.userData.getUSERID()})
+                        new Date(new java.util.Date().getTime()), mActivity.userData.getUSERID(),
+                        CommonUtils.getDataIfNull(beizhu.getText().toString())})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {

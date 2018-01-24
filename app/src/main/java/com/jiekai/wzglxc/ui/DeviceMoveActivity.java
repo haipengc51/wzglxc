@@ -15,6 +15,7 @@ import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DeviceEntity;
 import com.jiekai.wzglxc.entity.LastInsertIdEntity;
 import com.jiekai.wzglxc.test.NFCBaseActivity;
+import com.jiekai.wzglxc.utils.CommonUtils;
 import com.jiekai.wzglxc.utils.FileSizeUtils;
 import com.jiekai.wzglxc.utils.GlidUtils;
 import com.jiekai.wzglxc.utils.PictureSelectUtils;
@@ -58,6 +59,8 @@ public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickL
     EditText jinghao;
     @BindView(R.id.commit)
     TextView commit;
+    @BindView(R.id.beizhu)
+    EditText beizhu;
 
     private DeviceEntity deviceEntity;
     private AlertDialog alertDialog;
@@ -268,7 +271,8 @@ public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickL
         DBManager.dbDeal(DBManager.EVENT_INSERT)
                 .sql(SqlUrl.ADD_MOVE)
                 .params(new Object[]{deviceEntity.getBH(), duihao.getText().toString(), jinghao.getText().toString(),
-                        new Date(new java.util.Date().getTime()), userData.getUSERID()})
+                        new Date(new java.util.Date().getTime()), userData.getUSERID(),
+                        CommonUtils.getDataIfNull(beizhu.getText().toString())})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {
@@ -417,5 +421,12 @@ public class DeviceMoveActivity extends NFCBaseActivity implements View.OnClickL
     protected void onDestroy() {
         super.onDestroy();
         PictureSelectUtils.clearPictureSelectorCache(mActivity);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

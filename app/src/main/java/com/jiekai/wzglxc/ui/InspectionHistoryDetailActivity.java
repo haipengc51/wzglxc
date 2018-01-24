@@ -13,7 +13,6 @@ import com.jiekai.wzglxc.config.IntentFlag;
 import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DeviceInspectionEntity;
 import com.jiekai.wzglxc.entity.DevicedocEntity;
-import com.jiekai.wzglxc.entity.DevicemoveEntity;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.jiekai.wzglxc.utils.CommonUtils;
 import com.jiekai.wzglxc.utils.FileSizeUtils;
@@ -63,6 +62,8 @@ public class InspectionHistoryDetailActivity extends MyBaseActivity implements V
     TextView checkRemark;
     @BindView(R.id.recommit)
     TextView recommit;
+    @BindView(R.id.beizhu)
+    EditText beizhu;
 
     private DeviceInspectionEntity currentDatas;
 
@@ -94,6 +95,7 @@ public class InspectionHistoryDetailActivity extends MyBaseActivity implements V
         if (currentDatas != null) {
             recordType.setText(CommonUtils.getDataIfNull(getResources().getString(R.string.device_inspection)));
             deviceId.setText(CommonUtils.getDataIfNull(currentDatas.getSBBH()));
+            beizhu.setText(CommonUtils.getDataIfNull(currentDatas.getBZ()));
 //            duihao.setText(CommonUtils.getDataIfNull(currentDatas.getDH()));
 //            jinghao.setText(CommonUtils.getDataIfNull(currentDatas.getJH()));
             checkRemark.setText(CommonUtils.getDataIfNull(currentDatas.getSHBZ()));
@@ -233,7 +235,8 @@ public class InspectionHistoryDetailActivity extends MyBaseActivity implements V
     private void insertRecord() {
         DBManager.dbDeal(DBManager.EVENT_UPDATA)
                 .sql(SqlUrl.UPDATE_INSPECTION)
-                .params(new Object[]{new Date(new java.util.Date().getTime()), userData.getUSERID(), currentDatas.getID()})
+                .params(new Object[]{new Date(new java.util.Date().getTime()), userData.getUSERID(),
+                        CommonUtils.getDataIfNull(beizhu.getText().toString()), currentDatas.getID()})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {

@@ -3,6 +3,7 @@ package com.jiekai.wzglxc.ui;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DeviceEntity;
 import com.jiekai.wzglxc.entity.DevicescrapEntity;
 import com.jiekai.wzglxc.test.NFCBaseActivity;
+import com.jiekai.wzglxc.utils.CommonUtils;
 import com.jiekai.wzglxc.utils.FileSizeUtils;
 import com.jiekai.wzglxc.utils.GlidUtils;
 import com.jiekai.wzglxc.utils.PictureSelectUtils;
@@ -25,6 +27,7 @@ import com.jiekai.wzglxc.utils.zxing.CaptureActivity;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.entity.LocalMedia;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +38,7 @@ import butterknife.BindView;
  * 设备报废
  */
 
-public class DeviceScrapActivity extends NFCBaseActivity implements View.OnClickListener{
+public class DeviceScrapActivity extends NFCBaseActivity implements View.OnClickListener {
 
     @BindView(R.id.back)
     ImageView back;
@@ -61,6 +64,8 @@ public class DeviceScrapActivity extends NFCBaseActivity implements View.OnClick
     TextView enter;
     @BindView(R.id.cancle)
     TextView cancle;
+    @BindView(R.id.beizhu)
+    EditText beizhu;
 
     private List<LocalMedia> choosePictures = new ArrayList<>();
     private AlertDialog alertDialog;
@@ -181,6 +186,7 @@ public class DeviceScrapActivity extends NFCBaseActivity implements View.OnClick
 
     /**
      * 通过二维码获取设备信息
+     *
      * @param id
      */
     private void getDeviceDataBySAOMA(String id) {
@@ -241,7 +247,7 @@ public class DeviceScrapActivity extends NFCBaseActivity implements View.OnClick
                     @Override
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
-                            alert(R.string.device_already_out);
+                            alert(R.string.device_already_scrap);
                             isScrap = true;
                         } else {
                             isScrap = false;
@@ -344,7 +350,8 @@ public class DeviceScrapActivity extends NFCBaseActivity implements View.OnClick
         DBManager.dbDeal(DBManager.EVENT_INSERT)
                 .sql(SqlUrl.ADD_DEVICE_SCRAP)
                 .params(new Object[]{currentDevice.getBH(),
-                        new java.sql.Date(new java.util.Date().getTime()), userData.getUSERID()})
+                        new Date(new java.util.Date().getTime()), userData.getUSERID(),
+                        CommonUtils.getDataIfNull(beizhu.getText().toString())})
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {

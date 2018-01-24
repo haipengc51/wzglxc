@@ -53,7 +53,8 @@
         <activity android:name="com.jiekai.wzglxc.ui.DeviceScrapActivity"
             android:label="@string/device_scrap"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan|stateVisible"/>
         <activity android:name="com.jiekai.wzglxc.ui.DeviceRepairActivity"
             android:label="@string/device_repair"
             android:screenOrientation="portrait"
@@ -76,27 +77,33 @@
         <activity android:name=".ui.DeviceUseRecordActivity"
             android:label="@string/device_use_record"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan|stateVisible"/>
         <activity android:name=".ui.RecordHistoryActivity"
             android:label="@string/record_check_result"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.RecordHistoryDetailActivity"
             android:label="@string/record_failed_detail"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateVisible"/>
         <activity android:name=".ui.DeviceMoveActivity"
             android:label="@string/device_move"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan|stateVisible"/>
         <activity android:name=".ui.DeviceInspectionActivity"
             android:label="@string/device_inspection"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan|stateVisible"/>
         <activity android:name=".ui.InspectionHistoryDetailActivity"
             android:label="@string/record_failed_detail"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateVisible"/>
         <activity android:name=".ui.MoveHistoryDetailActivity"
             android:label="@string/record_check_result"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateVisible"/>
     </application>
 
 </manifest>

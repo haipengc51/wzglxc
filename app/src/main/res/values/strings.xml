@@ -93,7 +93,7 @@
     <string name="device_num">设备数量</string>
     <string name="cancle">取消</string>
     <string name="logout">退出登录</string>
-    <string name="click_again_finish">在此点击退出物资管理</string>
+    <string name="click_again_finish">再次点击退出物资管理</string>
     <string name="input_jinghao">请输入井号</string>
     <string name="please_input_jinghao">请输入井号</string>
     <string name="uploading_db">正在上传数据库</string>
@@ -148,4 +148,8 @@
     <string name="device_recod_faild">设备记录失败</string>
     <string name="device_move">设备转场</string>
     <string name="device_inspection">设备巡检</string>
+    <string name="ungree_permission">拒绝摄像头权限，该功能无法使用</string>
+    <string name="beizhu_">备注:</string>
+    <string name="input_beizhu">请输入备注</string>
+    <string name="beizhu_to_long">备注只允许输入255个字</string>
 </resources>
