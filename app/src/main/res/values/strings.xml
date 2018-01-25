@@ -140,6 +140,7 @@
     <string name="record_check_result">记录审核结果</string>
     <string name="record_type">记录种类</string>
     <string name="check_result">审核意见</string>
+    <string name="check_jieguo">审核结果</string>
     <string name="your_all_check_pass">您所有的审核都通过了申请</string>
     <string name="check_remark">审核备注</string>
     <string name="recommit">重新提交</string>
