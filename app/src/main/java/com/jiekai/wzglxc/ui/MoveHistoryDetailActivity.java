@@ -388,6 +388,7 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
                     public void onResponse(List result) {
                         alert(R.string.device_move_success);
                         dismissProgressDialog();
+                        setResult(RESULT_OK);
                         finish();
                     }
                 });

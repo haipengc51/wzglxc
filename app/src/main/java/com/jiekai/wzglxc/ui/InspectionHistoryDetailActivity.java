@@ -137,14 +137,14 @@ public class InspectionHistoryDetailActivity extends MyBaseActivity implements V
             alert(R.string.get_bh_faild);
             return;
         }
-        if (StringUtils.isEmpty(duihao.getText().toString())) {
-            alert(R.string.please_input_duihao);
-            return;
-        }
-        if (StringUtils.isEmpty(jinghao.getText().toString())) {
-            alert(R.string.please_input_jinghao);
-            return;
-        }
+//        if (StringUtils.isEmpty(duihao.getText().toString())) {
+//            alert(R.string.please_input_duihao);
+//            return;
+//        }
+//        if (StringUtils.isEmpty(jinghao.getText().toString())) {
+//            alert(R.string.please_input_jinghao);
+//            return;
+//        }
         if (isChooseImage) {
             updataImage();
         } else {
@@ -387,6 +387,7 @@ public class InspectionHistoryDetailActivity extends MyBaseActivity implements V
                     public void onResponse(List result) {
                         alert(R.string.device_inspection_success);
                         dismissProgressDialog();
+                        setResult(RESULT_OK);
                         finish();
                     }
                 });

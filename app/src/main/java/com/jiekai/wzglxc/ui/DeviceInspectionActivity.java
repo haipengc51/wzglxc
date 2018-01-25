@@ -447,10 +447,10 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
             if (choosePictures != null && choosePictures.size() != 0) {
                 String currentDevicePicturePath = choosePictures.get(0).getCompressPath();
                 GlidUtils.displayImage(mActivity, currentDevicePicturePath, recordImage);
-            } else if (requestCode == Constants.SCAN && resultCode == RESULT_OK) {
-                String code = data.getExtras().getString("result");
-                getDeviceDataBySAOMA(code);
             }
+        } else if (requestCode == Constants.SCAN && resultCode == RESULT_OK) {
+            String code = data.getExtras().getString("result");
+            getDeviceDataBySAOMA(code);
         }
     }
 

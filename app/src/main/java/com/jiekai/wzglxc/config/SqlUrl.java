@@ -228,17 +228,17 @@ public class SqlUrl {
     /**
      * 更新记录信息
      */
-    public static final String UPDATE_RECORD = "UPDATE devicelog SET DH = ?, JH =?, JLSJ = ?, CZR = ?, BZ = ?" +
+    public static final String UPDATE_RECORD = "UPDATE devicelog SET DH = ?, JH =?, JLSJ = ?, CZR = ?, BZ = ?," +
             " SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE ID = ?";
     /**
      * 更新转场记录
      */
-    public static final String UPDATE_MOVE = "UPDATE devicemove SET DH = ?, JH =?, CZSJ = ?, CZR = ?, BZ = ?" +
+    public static final String UPDATE_MOVE = "UPDATE devicemove SET DH = ?, JH =?, CZSJ = ?, CZR = ?, BZ = ?," +
             " SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE ID = ?";
     /**
      * 更新巡检记录
      */
-    public static final String UPDATE_INSPECTION = "UPDATE deviceinspection SET CZSJ = ?, CZR = ?, BZ = ?" +
+    public static final String UPDATE_INSPECTION = "UPDATE deviceinspection SET CZSJ = ?, CZR = ?, BZ = ?," +
             " SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE ID = ?";
     /**
      * 添加转场记录

@@ -33,6 +33,8 @@ import butterknife.BindView;
 
 public class RecordHistoryActivity extends MyBaseActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener{
+    private static final int CHENGE_SUCCESS = 0;
+
     @BindView(R.id.back)
     ImageView back;
     @BindView(R.id.title)
@@ -88,17 +90,17 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                 case Config.TYPE_JL:
                     Intent intent = new Intent(mActivity, RecordHistoryDetailActivity.class);
                     intent.putExtra(IntentFlag.DATA, (DevicelogEntity) entity.getData());
-                    startActivity(intent);
+                    startActivityForResult(intent, CHENGE_SUCCESS);
                     break;
                 case Config.TYPE_MOVE:
                     Intent intent_move = new Intent(mActivity, MoveHistoryDetailActivity.class);
                     intent_move.putExtra(IntentFlag.DATA, (DevicemoveEntity) entity.getData());
-                    startActivity(intent_move);
+                    startActivityForResult(intent_move, CHENGE_SUCCESS);
                     break;
-                case Config.TYPE_INSPECTION:
+                case Config.TYPE_INSPECTION:    //巡检
                     Intent inspection = new Intent(mActivity, InspectionHistoryDetailActivity.class);
                     inspection.putExtra(IntentFlag.DATA, (DeviceInspectionEntity) entity.getData());
-                    startActivity(inspection);
+                    startActivityForResult(inspection, CHENGE_SUCCESS);
                     break;
             }
         }
@@ -111,6 +113,10 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
             dataList = new ArrayList<>();
         }
         selectNum = 0;
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+            setHeaderViewVisible(View.GONE);
+        }
         DBManager.NewDbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GET_RECORD_CHECK_LIST)
                 .params(new String[]{userData.getUSERID()})
@@ -234,6 +240,14 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
     private void setHeaderViewVisible(int visible) {
         if (headerView != null) {
             headerView.setVisibility(visible);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CHENGE_SUCCESS && resultCode == RESULT_OK) {
+            getData();
         }
     }
 }

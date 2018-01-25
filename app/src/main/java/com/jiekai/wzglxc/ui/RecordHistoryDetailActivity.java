@@ -390,6 +390,7 @@ public class RecordHistoryDetailActivity extends MyBaseActivity implements View.
                     public void onResponse(List result) {
                         alert(R.string.commit_record_success);
                         dismissProgressDialog();
+                        setResult(RESULT_OK);
                         finish();
                     }
                 });
