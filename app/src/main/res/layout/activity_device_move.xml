@@ -7,202 +7,216 @@
     <include
         layout="@layout/title_image_text_image"/>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginTop="@dimen/marginTop20"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="@dimen/marginTop20"
-            android:text="@string/device_id"
-            android:textColor="@color/text_content_color"
-            android:textSize="@dimen/content_text_size"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/device_id"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="@dimen/marginTop10"
-            android:layout_marginRight="@dimen/marginTop20"
-            android:background="@drawable/input_bg"
-            android:drawablePadding="5dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:hint="@string/device_id"
-            android:textColor="@color/text_content_color"
-            android:textSize="@dimen/content_text_size"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:layout_marginTop="@dimen/marginTop20"
+                android:orientation="horizontal">
 
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/marginTop20"
+                    android:text="@string/device_id"
+                    android:textColor="@color/text_content_color"
+                    android:textSize="@dimen/content_text_size"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginTop="@dimen/marginTop20"
-        android:orientation="vertical">
+                <TextView
+                    android:id="@+id/device_id"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/marginTop10"
+                    android:layout_marginRight="@dimen/marginTop20"
+                    android:background="@drawable/input_bg"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:hint="@string/device_id"
+                    android:textColor="@color/text_content_color"
+                    android:textSize="@dimen/content_text_size"/>
 
-        <TextView
-            android:id="@+id/read_card"
-            style="@style/little_button_style"
-            android:layout_marginLeft="@dimen/marginTop20"
-            android:layout_alignParentLeft="true"
-            android:text="@string/read_card"/>
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/sao_ma"
-            style="@style/little_button_style"
-            android:layout_marginRight="@dimen/marginTop20"
-            android:layout_alignParentRight="true"
-            android:text="@string/recongnize_code"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:layout_marginTop="@dimen/marginTop20"
+                android:orientation="vertical">
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/read_card"
+                    style="@style/little_button_style"
+                    android:layout_marginLeft="@dimen/marginTop20"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/read_card"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/sao_ma"
+                    style="@style/little_button_style"
+                    android:layout_marginRight="@dimen/marginTop20"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/recongnize_code"/>
 
-        <ImageView
-            android:id="@+id/record_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/marginTop10"
-            android:layout_centerHorizontal="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_choose_image" />
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/choose_picture"
-            style="@style/little_button_style"
-            android:layout_toRightOf="@+id/record_image"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/marginTop20"
-            android:layout_marginTop="@dimen/marginTop10"
-            android:text="@string/take_picture" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/record_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/marginTop10"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_choose_image" />
+
+                <TextView
+                    android:id="@+id/choose_picture"
+                    style="@style/little_button_style"
+                    android:layout_toRightOf="@+id/record_image"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/marginTop20"
+                    android:layout_marginTop="@dimen/marginTop10"
+                    android:text="@string/take_picture" />
+
+            </RelativeLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginTop="@dimen/marginTop10"
-        android:orientation="horizontal"
-        android:visibility="visible">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:layout_marginTop="@dimen/marginTop10"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="@dimen/marginTop20"
-            android:text="@string/duihao_"
-            android:textColor="@color/text_content_color"
-            android:textSize="@dimen/content_text_size"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/marginTop20"
+                    android:text="@string/duihao_"
+                    android:textColor="@color/text_content_color"
+                    android:textSize="@dimen/content_text_size"/>
 
-        <EditText
-            android:id="@+id/duihao"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="@dimen/marginTop10"
-            android:layout_marginRight="@dimen/marginTop20"
-            android:background="@drawable/input_bg"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:singleLine="true"
-            android:hint="@string/input_duihao"
-            android:textColor="@color/text_content_color"
-            android:textSize="@dimen/content_text_size"/>
+                <EditText
+                    android:id="@+id/duihao"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/marginTop10"
+                    android:layout_marginRight="@dimen/marginTop20"
+                    android:background="@drawable/input_bg"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:singleLine="true"
+                    android:hint="@string/input_duihao"
+                    android:textColor="@color/text_content_color"
+                    android:textSize="@dimen/content_text_size"/>
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginTop="@dimen/marginTop10"
-        android:orientation="horizontal"
-        android:visibility="visible">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:layout_marginTop="@dimen/marginTop10"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="@dimen/marginTop20"
-            android:text="@string/jinghao_"
-            android:textColor="@color/text_content_color"
-            android:textSize="@dimen/content_text_size"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/marginTop20"
+                    android:text="@string/jinghao_"
+                    android:textColor="@color/text_content_color"
+                    android:textSize="@dimen/content_text_size"/>
 
-        <EditText
-            android:id="@+id/jinghao"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="@dimen/marginTop10"
-            android:layout_marginRight="@dimen/marginTop20"
-            android:background="@drawable/input_bg"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:singleLine="true"
-            android:hint="@string/input_jinghao"
-            android:textColor="@color/text_content_color"
-            android:textSize="@dimen/content_text_size"/>
+                <EditText
+                    android:id="@+id/jinghao"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/marginTop10"
+                    android:layout_marginRight="@dimen/marginTop20"
+                    android:background="@drawable/input_bg"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:singleLine="true"
+                    android:hint="@string/input_jinghao"
+                    android:textColor="@color/text_content_color"
+                    android:textSize="@dimen/content_text_size"/>
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/marginTop10"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/marginTop10"
+                android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="@dimen/marginTop20"
-            android:text="@string/beizhu_"
-            android:textColor="@color/text_content_color"
-            android:textSize="@dimen/content_text_size"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/marginTop20"
+                    android:text="@string/beizhu_"
+                    android:textColor="@color/text_content_color"
+                    android:textSize="@dimen/content_text_size"/>
 
-        <EditText
-            android:id="@+id/beizhu"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:minHeight="@dimen/item_height"
-            android:layout_marginLeft="@dimen/marginTop10"
-            android:layout_marginRight="@dimen/marginTop20"
-            android:background="@drawable/input_bg"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:maxLength="255"
-            android:hint="@string/input_beizhu"
-            android:textColor="@color/text_content_color"
-            android:textSize="@dimen/content_text_size"/>
+                <EditText
+                    android:id="@+id/beizhu"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/item_height"
+                    android:layout_marginLeft="@dimen/marginTop10"
+                    android:layout_marginRight="@dimen/marginTop20"
+                    android:background="@drawable/input_bg"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:maxLength="255"
+                    android:hint="@string/input_beizhu"
+                    android:textColor="@color/text_content_color"
+                    android:textSize="@dimen/content_text_size"/>
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <TextView
-        android:id="@+id/commit"
-        style="@style/button_style"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
-        android:layout_gravity="center_horizontal"
-        android:layout_toRightOf="@+id/out_image"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:layout_marginLeft="@dimen/marginTop20"
-        android:layout_marginRight="@dimen/marginTop20"
-        android:layout_marginTop="@dimen/marginTop20"
-        android:text="@string/commit"
-        android:textSize="@dimen/title_text_size"/>
+            <TextView
+                android:id="@+id/commit"
+                style="@style/button_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@+id/out_image"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:layout_marginLeft="@dimen/marginTop20"
+                android:layout_marginRight="@dimen/marginTop20"
+                android:layout_marginTop="@dimen/marginTop20"
+                android:text="@string/commit"
+                android:textSize="@dimen/title_text_size"/>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

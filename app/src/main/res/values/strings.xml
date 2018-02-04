@@ -126,7 +126,7 @@
     <string name="no_permission">没有库管权限，请使用库管账号登录</string>
     <string name="no_permission_xc">没有现场权限，请使用现场账号登录</string>
     <string name="zhang_hao_jing_yong">该账号已被禁用</string>
-    <string name="device_use_record">设备使用记录</string>
+    <string name="device_use_record">使用记录</string>
     <string name="duihao_">队号:</string>
     <string name="duihao">队号</string>
     <string name="input_duihao">请输入队号</string>
@@ -137,7 +137,7 @@
     <string name="commit_record_faild">提交记录失败</string>
     <string name="commit_record_success">提交记录成功</string>
     <string name="choose_recent_use">选择最近使用过的设备自编号</string>
-    <string name="record_check_result">记录审核结果</string>
+    <string name="record_check_result">记录审核</string>
     <string name="record_type">记录种类</string>
     <string name="check_result">审核意见</string>
     <string name="check_jieguo">审核结果</string>
