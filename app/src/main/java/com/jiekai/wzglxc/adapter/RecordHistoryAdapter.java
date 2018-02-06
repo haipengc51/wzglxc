@@ -10,6 +10,7 @@ import com.jiekai.wzglxc.adapter.base.MyBaseAdapter;
 import com.jiekai.wzglxc.config.Config;
 import com.jiekai.wzglxc.entity.DeviceInspectionEntity;
 import com.jiekai.wzglxc.entity.DeviceUnCheckEntity;
+import com.jiekai.wzglxc.entity.DeviceapplyEntity;
 import com.jiekai.wzglxc.entity.DevicelogEntity;
 import com.jiekai.wzglxc.entity.DevicemoveEntity;
 
@@ -84,6 +85,22 @@ public class RecordHistoryAdapter extends MyBaseAdapter {
 //                myViewHolder.duihao.setText(getDataIfNull(devicemoveEntity.getDH()));
 //                myViewHolder.jinghao.setText(getDataIfNull(devicemoveEntity.getJH()));
                 String shyj = devicemoveEntity.getSHYJ();
+                if ("1".equals(shyj)) {
+                    myViewHolder.checkResult.setText("通过");
+                } else if ("0".equals(shyj)) {
+                    myViewHolder.checkResult.setText("未通过");
+                } else {
+                    myViewHolder.checkResult.setText("待审核");
+                }
+            }
+                break;
+            case Config.TYPE_APPLAY: {
+                DeviceapplyEntity deviceapplyEntity = (DeviceapplyEntity) item.getData();
+                myViewHolder.recordType.setText(getDataIfNull(item.getJLZL()));
+                myViewHolder.deviceId.setText("");
+//                myViewHolder.duihao.setText(getDataIfNull(devicemoveEntity.getDH()));
+//                myViewHolder.jinghao.setText(getDataIfNull(devicemoveEntity.getJH()));
+                String shyj = deviceapplyEntity.getSHYJ();
                 if ("1".equals(shyj)) {
                     myViewHolder.checkResult.setText("通过");
                 } else if ("0".equals(shyj)) {

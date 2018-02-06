@@ -260,4 +260,12 @@ public class SqlUrl {
      * 设备巡检提交审核失败的结果
      */
     public static final String GET_INSPECTION_CHECK_LIST = "SELECT * FROM deviceinspection WHERE CZR = ? AND SHYJ = \"0\"";
+    /**
+     * 设备申请提交审核失败的结果
+     */
+    public static final String GET_APPLAY_CHECK_LIST = "SELECT * FROM deviceapply WHERE SQR = ? AND SHYJ = \"0\"";
+    /**
+     * 插入设备申请
+     */
+    public static final String INSERT_APPLAY = "INSERT INTO deviceapply (SYDH, SYJH, SQBZ, SQR, SQSJ) VALUES (?, ?, ?, ?, ?)";
 }

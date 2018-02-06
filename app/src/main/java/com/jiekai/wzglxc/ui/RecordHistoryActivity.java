@@ -15,6 +15,7 @@ import com.jiekai.wzglxc.config.IntentFlag;
 import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DeviceInspectionEntity;
 import com.jiekai.wzglxc.entity.DeviceUnCheckEntity;
+import com.jiekai.wzglxc.entity.DeviceapplyEntity;
 import com.jiekai.wzglxc.entity.DevicelogEntity;
 import com.jiekai.wzglxc.entity.DevicemoveEntity;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
@@ -102,6 +103,9 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                     inspection.putExtra(IntentFlag.DATA, (DeviceInspectionEntity) entity.getData());
                     startActivityForResult(inspection, CHENGE_SUCCESS);
                     break;
+                case Config.TYPE_APPLAY:
+
+                    break;
             }
         }
     }
@@ -188,6 +192,40 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                     }
                 });
         DBManager.NewDbDeal(DBManager.SELECT)
+                .sql(SqlUrl.GET_APPLAY_CHECK_LIST)
+                .params(new String[]{userData.getUSERID()})
+                .clazz(DeviceapplyEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+                        alert(err);
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        if (result != null && result.size() != 0) {
+                            for (int i=0; i<result.size(); i++) {
+                                DeviceapplyEntity deviceapplyEntity = (DeviceapplyEntity) result.get(i);
+                                DeviceUnCheckEntity deviceUnCheckEntity = new DeviceUnCheckEntity();
+                                deviceUnCheckEntity.setType(Config.TYPE_APPLAY);
+                                deviceUnCheckEntity.setJLZL(getResources().getString(R.string.device_applay));
+                                deviceUnCheckEntity.setYJ(deviceapplyEntity.getSHYJ());
+                                deviceUnCheckEntity.setData(deviceapplyEntity);
+                                dataList.add(deviceUnCheckEntity);
+                            }
+                            adapter.notifyDataSetChanged();
+                            setHeaderViewVisible(View.VISIBLE);
+                        }
+                        allSelectFinish();
+                    }
+                });
+        DBManager.NewDbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GET_INSPECTION_CHECK_LIST)
                 .params(new String[]{userData.getUSERID()})
                 .clazz(DeviceInspectionEntity.class)
@@ -226,7 +264,7 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
 
     private void allSelectFinish() {
         selectNum++;
-        if (selectNum >= 3) {
+        if (selectNum >= 4) {
             if (adapter != null ){
                 if (adapter.dataList == null || adapter.dataList.size() == 0) {
                     alert(R.string.your_all_check_pass);

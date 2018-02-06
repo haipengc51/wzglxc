@@ -104,6 +104,9 @@
             android:label="@string/record_check_result"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateVisible"/>
+        <activity android:name=".ui.DeviceApplayActivity"
+            android:label="@string/device_applay"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

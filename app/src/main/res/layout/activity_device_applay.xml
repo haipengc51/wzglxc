@@ -7,4 +7,104 @@
     <include
         layout="@layout/title_image_text_image"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/applay_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/marginTop10"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_choose_image" />
+
+            <TextView
+                android:id="@+id/choose_picture"
+                style="@style/little_button_style"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/marginTop10"
+                android:text="@string/take_picture" />
+
+            <EditText
+                android:id="@+id/input_jinghao"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/marginTop10"
+                android:background="@drawable/input_bg"
+                android:paddingLeft="@dimen/marginTop10"
+                android:paddingRight="@dimen/marginTop10"
+                android:layout_marginLeft="@dimen/marginTop20"
+                android:layout_marginRight="@dimen/marginTop20"
+                android:hint="@string/input_jinghao"
+                android:textSize="@dimen/content_text_size"
+                android:textColor="@color/text_content_color"/>
+
+            <EditText
+                android:id="@+id/input_duihao"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/marginTop10"
+                android:background="@drawable/input_bg"
+                android:paddingLeft="@dimen/marginTop10"
+                android:paddingRight="@dimen/marginTop10"
+                android:layout_marginLeft="@dimen/marginTop20"
+                android:layout_marginRight="@dimen/marginTop20"
+                android:hint="@string/input_duihao"
+                android:textSize="@dimen/content_text_size"
+                android:textColor="@color/text_content_color"/>
+
+            <EditText
+                android:id="@+id/beizhu"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/marginTop10"
+                android:background="@drawable/input_bg"
+                android:paddingLeft="@dimen/marginTop10"
+                android:paddingRight="@dimen/marginTop10"
+                android:layout_marginLeft="@dimen/marginTop20"
+                android:layout_marginRight="@dimen/marginTop20"
+                android:hint="@string/input_beizhu"
+                android:textSize="@dimen/content_text_size"
+                android:textColor="@color/text_content_color"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/marginTop20"
+                android:layout_marginTop="@dimen/marginTop10"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/enter"
+                    style="@style/little_button_style"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="@dimen/marginTop20"
+                    android:layout_marginTop="@dimen/marginTop10"
+                    android:text="@string/enter" />
+
+                <TextView
+                    android:id="@+id/cancle"
+                    style="@style/little_button_style"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/marginTop20"
+                    android:layout_marginTop="@dimen/marginTop10"
+                    android:text="@string/picture_cancel" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 </LinearLayout>

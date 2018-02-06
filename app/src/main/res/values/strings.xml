@@ -154,4 +154,7 @@
     <string name="input_beizhu">请输入备注</string>
     <string name="beizhu_to_long">备注只允许输入255个字</string>
     <string name="no_xunjian_permission">您没有巡检权限</string>
+    <string name="device_applay">设备申请</string>
+    <string name="device_applay_faild">设备申请失败</string>
+    <string name="device_applay_success">设备申请成功</string>
 </resources>
