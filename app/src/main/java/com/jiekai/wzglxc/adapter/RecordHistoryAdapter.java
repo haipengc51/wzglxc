@@ -97,7 +97,7 @@ public class RecordHistoryAdapter extends MyBaseAdapter {
             case Config.TYPE_APPLAY: {
                 DeviceapplyEntity deviceapplyEntity = (DeviceapplyEntity) item.getData();
                 myViewHolder.recordType.setText(getDataIfNull(item.getJLZL()));
-                myViewHolder.deviceId.setText("");
+                myViewHolder.deviceId.setText("--");
 //                myViewHolder.duihao.setText(getDataIfNull(devicemoveEntity.getDH()));
 //                myViewHolder.jinghao.setText(getDataIfNull(devicemoveEntity.getJH()));
                 String shyj = deviceapplyEntity.getSHYJ();
