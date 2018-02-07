@@ -268,4 +268,9 @@ public class SqlUrl {
      * 插入设备申请
      */
     public static final String INSERT_APPLAY = "INSERT INTO deviceapply (SYDH, SYJH, SQBZ, SQR, SQSJ) VALUES (?, ?, ?, ?, ?)";
+    /**
+     * 更新设备申请
+     */
+    public static final String UPDATE_DEVICE_APPLAY = "UPDATE deviceapply SET SYDH = ?, SYJH = ?, SQR = ?, SQSJ = ?, SQBZ = ?, " +
+            "SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE SQID = ?";
 }

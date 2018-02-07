@@ -9,7 +9,7 @@ import java.sql.Date;
  */
 
 public class DeviceapplyEntity extends BaseEntity {
-    private String SQID;
+    private int SQID;
     private String SYDH;
     private String SYJH;
     private String SQR;
@@ -20,11 +20,11 @@ public class DeviceapplyEntity extends BaseEntity {
     private String SHBZ;
     private String SHYJ;
 
-    public String getSQID() {
+    public int getSQID() {
         return SQID;
     }
 
-    public void setSQID(String SQID) {
+    public void setSQID(int SQID) {
         this.SQID = SQID;
     }
 

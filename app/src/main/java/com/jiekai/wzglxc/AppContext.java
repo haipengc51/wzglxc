@@ -5,12 +5,11 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.View;
 
 import com.jiekai.wzglxc.config.Config;
 import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.DeviceInspectionEntity;
-import com.jiekai.wzglxc.entity.DeviceUnCheckEntity;
+import com.jiekai.wzglxc.entity.DeviceapplyEntity;
 import com.jiekai.wzglxc.entity.DevicelogEntity;
 import com.jiekai.wzglxc.entity.DevicemoveEntity;
 import com.jiekai.wzglxc.ui.RecordHistoryActivity;
@@ -98,6 +97,33 @@ public class AppContext extends Application {
                 .sql(SqlUrl.GET_MOVE_CHECK_LIST)
                 .params(new String[]{userId})
                 .clazz(DevicemoveEntity.class)
+                .execut(new DbCallBack() {
+                    @Override
+                    public void onDbStart() {
+
+                    }
+
+                    @Override
+                    public void onError(String err) {
+
+                    }
+
+                    @Override
+                    public void onResponse(List result) {
+                        if (result != null && result.size() != 0) {
+                            showUnCheckDialog(activity);
+                            return;
+                        }
+                        getApplyUncheckData(activity, userId);
+                    }
+                });
+    }
+
+    private  static void getApplyUncheckData(final Activity activity, final String userId) {
+        DBManager.NewDbDeal(DBManager.SELECT)
+                .sql(SqlUrl.GET_APPLAY_CHECK_LIST)
+                .params(new String[]{userId})
+                .clazz(DeviceapplyEntity.class)
                 .execut(new DbCallBack() {
                     @Override
                     public void onDbStart() {

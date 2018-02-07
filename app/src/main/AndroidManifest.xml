@@ -107,6 +107,9 @@
         <activity android:name=".ui.DeviceApplayActivity"
             android:label="@string/device_applay"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ui.DeviceApplayDetailActivity"
+            android:label="@string/device_applay_detail"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

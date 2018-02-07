@@ -104,7 +104,9 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                     startActivityForResult(inspection, CHENGE_SUCCESS);
                     break;
                 case Config.TYPE_APPLAY:
-
+                    Intent applay = new Intent(mActivity, DeviceApplayDetailActivity.class);
+                    applay.putExtra(IntentFlag.DATA, (DeviceapplyEntity) entity.getData());
+                    startActivityForResult(applay, CHENGE_SUCCESS);
                     break;
             }
         }

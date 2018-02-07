@@ -157,4 +157,6 @@
     <string name="device_applay">设备申请</string>
     <string name="device_applay_faild">设备申请失败</string>
     <string name="device_applay_success">设备申请成功</string>
+    <string name="erro">错误</string>
+    <string name="device_applay_detail">设备申请详情</string>
 </resources>
