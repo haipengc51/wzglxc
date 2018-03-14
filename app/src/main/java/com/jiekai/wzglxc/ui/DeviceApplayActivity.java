@@ -1,8 +1,6 @@
 package com.jiekai.wzglxc.ui;
 
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by laowu on 2018/2/5.
@@ -139,6 +136,11 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
                     }
 
                     @Override
+                    public void ftpProgress(long allSize, long currentSize, int process) {
+
+                    }
+
+                    @Override
                     public void ftpSuccess(String remotePath) {
                         dismissProgressDialog();
                         imagePath = Config.FTP_PATH_HANDLER + remotePath;
@@ -161,6 +163,11 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
         FtpManager.getInstance().deletFile(path, new FtpCallBack() {
             @Override
             public void ftpStart() {
+
+            }
+
+            @Override
+            public void ftpProgress(long allSize, long currentSize, int process) {
 
             }
 

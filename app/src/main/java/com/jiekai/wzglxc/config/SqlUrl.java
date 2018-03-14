@@ -273,4 +273,9 @@ public class SqlUrl {
      */
     public static final String UPDATE_DEVICE_APPLAY = "UPDATE deviceapply SET SYDH = ?, SYJH = ?, SQR = ?, SQSJ = ?, SQBZ = ?, " +
             "SHYJ = \"\", SHR = \"\", SHSJ = NULL, SHBZ = \"\" WHERE SQID = ?";
+
+    /**
+     * 获取远程服务器的版本号信息
+     */
+    public static final String GET_UPDATE_VERSION = "SELECT * FROM appmanager WHERE LB = \"XC\"";
 }

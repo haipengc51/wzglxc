@@ -164,6 +164,11 @@ public class InspectionHistoryDetailActivity extends MyBaseActivity implements V
                     }
 
                     @Override
+                    public void ftpProgress(long allSize, long currentSize, int process) {
+
+                    }
+
+                    @Override
                     public void ftpSuccess(String remotePath) {
                         dismissProgressDialog();
                         imagePath = Config.FTP_PATH_HANDLER + remotePath;
@@ -189,6 +194,11 @@ public class InspectionHistoryDetailActivity extends MyBaseActivity implements V
         FtpManager.getInstance().deletFile(path, new FtpCallBack() {
             @Override
             public void ftpStart() {
+
+            }
+
+            @Override
+            public void ftpProgress(long allSize, long currentSize, int process) {
 
             }
 
@@ -332,6 +342,11 @@ public class InspectionHistoryDetailActivity extends MyBaseActivity implements V
                         FtpManager.getInstance().deletFile(filePath, new FtpCallBack() {
                             @Override
                             public void ftpStart() {
+
+                            }
+
+                            @Override
+                            public void ftpProgress(long allSize, long currentSize, int process) {
 
                             }
 

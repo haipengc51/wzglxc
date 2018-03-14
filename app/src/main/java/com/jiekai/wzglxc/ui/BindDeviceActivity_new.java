@@ -727,6 +727,11 @@ public class BindDeviceActivity_new extends NFCBaseActivity implements View.OnCl
                     }
 
                     @Override
+                    public void ftpProgress(long allSize, long currentSize, int process) {
+
+                    }
+
+                    @Override
                     public void ftpSuccess(String remotePath) {
                         saveImagePathToRemoteDB(romoteName,
                                 FileSizeUtils.getAutoFileOrFilesSize(localPath),

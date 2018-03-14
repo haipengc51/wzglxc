@@ -1,7 +1,11 @@
 package com.jiekai.wzglxc.ui;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +18,7 @@ import com.jiekai.wzglxc.config.SqlUrl;
 import com.jiekai.wzglxc.entity.KeeperEntity;
 import com.jiekai.wzglxc.entity.UserRoleEntity;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
+import com.jiekai.wzglxc.ui.update.UpdateManager;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
 
@@ -28,15 +33,36 @@ import butterknife.BindView;
  */
 
 public class KeeperMainActivity extends MyBaseActivity implements AdapterView.OnItemClickListener {
+    private static final int HANDLER_CHENGE_UPDATE = 0;
     private final static int LOGOUT = 0;
     @BindView(R.id.grid_view)
     GridView gridView;
 
     private long mBackPressedTime = 0;
 
-    private List<KeeperEntity> dataList = new ArrayList<KeeperEntity>() {
-    };
+    private List<KeeperEntity> dataList = new ArrayList<KeeperEntity>();
     private KeeperAdapter adapter;
+
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case HANDLER_CHENGE_UPDATE:     //延时检测是否有更新
+                    UpdateManager updateManager = new UpdateManager(KeeperMainActivity.this);
+                    updateManager.getRemoteVersion();
+                    break;
+            }
+        }
+    };
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            mHandler.sendEmptyMessageDelayed(HANDLER_CHENGE_UPDATE, 3000 * 1);
+        }
+    }
 
     @Override
     public void initView() {
