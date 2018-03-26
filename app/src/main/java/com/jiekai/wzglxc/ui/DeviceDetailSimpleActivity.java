@@ -23,6 +23,7 @@ import com.jiekai.wzglxc.utils.StringUtils;
 import com.jiekai.wzglxc.utils.TimeUtils;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
+import com.jiekai.wzglxc.utils.dbutils.DbDeal;
 import com.jiekai.wzglxc.utils.zxing.CaptureActivity;
 import com.luck.picture.lib.entity.LocalMedia;
 
@@ -58,6 +59,7 @@ public class DeviceDetailSimpleActivity extends NFCBaseActivity implements View.
     private AlertDialog alertDialog;
 
     private DeviceDetailEntity currentDevice;
+    private DbDeal dbDeal = null;
 
     @Override
     public void initView() {
@@ -83,6 +85,14 @@ public class DeviceDetailSimpleActivity extends NFCBaseActivity implements View.
             detailAdapter = new DeviceDetailAdapter(mActivity, dataList);
             listview.setAdapter(detailAdapter);
             listview.setOnItemClickListener(this);
+        }
+    }
+
+    @Override
+    public void cancleDbDeal() {
+        if (dbDeal != null) {
+            dbDeal.cancleDbDeal();
+            dismissProgressDialog();
         }
     }
 
@@ -116,16 +126,16 @@ public class DeviceDetailSimpleActivity extends NFCBaseActivity implements View.
      *
      * @param nfcString
      */
-    private void getDeviceById(String nfcString) {
+    private void getDeviceById(final String nfcString) {
         if (StringUtils.isEmpty(nfcString)) {
             alert(getResources().getString(R.string.get_id_err));
             return;
         }
-        DBManager.dbDeal(DBManager.SELECT)
-                .sql(SqlUrl.GET_DEVICE_DETAIL)
+        dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                dbDeal.sql(SqlUrl.GET_DEVICE_DETAIL)
                 .params(new String[]{nfcString, nfcString, nfcString})
                 .clazz(DeviceDetailEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.loading_device));
@@ -135,6 +145,7 @@ public class DeviceDetailSimpleActivity extends NFCBaseActivity implements View.
                     public void onError(String err) {
                         alert(err);
                         dismissProgressDialog();
+                        readCardErroDialog.errShowIdDialog(nfcString, true);
                     }
 
                     @Override
@@ -156,16 +167,16 @@ public class DeviceDetailSimpleActivity extends NFCBaseActivity implements View.
      *
      * @param nfcString
      */
-    private void getDeviceBySAOMA(String nfcString) {
+    private void getDeviceBySAOMA(final String nfcString) {
         if (StringUtils.isEmpty(nfcString)) {
             alert(getResources().getString(R.string.get_id_err));
             return;
         }
-        DBManager.dbDeal(DBManager.SELECT)
-                .sql(SqlUrl.GET_DEVICE_DETAIL_BY_SAOMA)
+        dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                dbDeal.sql(SqlUrl.GET_DEVICE_DETAIL_BY_SAOMA)
                 .params(new String[]{nfcString})
                 .clazz(DeviceDetailEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.loading_device));
@@ -175,6 +186,7 @@ public class DeviceDetailSimpleActivity extends NFCBaseActivity implements View.
                     public void onError(String err) {
                         alert(err);
                         dismissProgressDialog();
+                        readCardErroDialog.errShowIdDialog(nfcString, false);
                     }
 
                     @Override
@@ -349,11 +361,11 @@ public class DeviceDetailSimpleActivity extends NFCBaseActivity implements View.
 
     private void getImageData(String dataLB) {
         final List<LocalMedia> localMedias = new ArrayList<>();
-        DBManager.dbDeal(DBManager.SELECT)
-                .sql(SqlUrl.Get_Image_Path)
+        dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                dbDeal.sql(SqlUrl.Get_Image_Path)
                 .params(new String[]{currentDevice.getBH(), dataLB})
                 .clazz(DevicedocEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.loading_data));

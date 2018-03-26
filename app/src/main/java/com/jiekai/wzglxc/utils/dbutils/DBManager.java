@@ -1,5 +1,10 @@
 package com.jiekai.wzglxc.utils.dbutils;
 
+import android.content.Context;
+
+import com.jiekai.wzglxc.R;
+import com.jiekai.wzglxc.utils.NetWorkUtils;
+
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -37,7 +42,7 @@ public class DBManager {
     }
 
     public static DbDeal dbDeal(int dbType) {
-        DbDeal dbDeal = DbDeal.getInstance();
+        DbDeal dbDeal = new DbDeal();
         dbDeal.type(dbType);
         dbDeal.sql(null);
         dbDeal.params(null);
@@ -49,7 +54,6 @@ public class DBManager {
      * 新建一个DbDeal
      * @param dbType
      * @return
-     */
     public static DbDeal NewDbDeal(int dbType) {
         DbDeal dbDeal = new DbDeal();
         dbDeal.type(dbType);
@@ -58,6 +62,7 @@ public class DBManager {
         dbDeal.clazz(null);
         return dbDeal;
     }
+     */
 
     /**
      * 创建单例, 并初始化
@@ -75,7 +80,11 @@ public class DBManager {
         return executor;
     }
 
-    public void execute(final AsynInterface asynInterface, final DbCallBack callBack) {
+    public void execute(Context context, final AsynInterface asynInterface, final DbCallBack callBack) {
+        if (!NetWorkUtils.isNetworkConnected(context)) {
+            doFailed(callBack, context.getResources().getString(R.string.network_break));
+            return;
+        }
         executor.execute(new Runnable() {
             @Override
             public void run() {

@@ -1,8 +1,8 @@
 package com.jiekai.wzglxc;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -59,10 +59,10 @@ public class AppContext extends Application {
 
     /**
      * 检查是否有没有审核通过的信息
-     * @param activity
+     * @param context
      * @param userId
      */
-    public static void getUnCheckedData(final Activity activity, final String userId) {
+    public static void getUnCheckedData(final Context context, final String userId) {
         if (StringUtils.isEmpty(userId)) {
             return;
         }
@@ -70,7 +70,7 @@ public class AppContext extends Application {
                 .sql(SqlUrl.GET_RECORD_CHECK_LIST)
                 .params(new String[]{userId})
                 .clazz(DevicelogEntity.class)
-                .execut(new DbCallBack() {
+                .execut(context, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -84,20 +84,20 @@ public class AppContext extends Application {
                     @Override
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
-                            showUnCheckDialog(activity);
+                            showUnCheckDialog(context);
                             return;
                         }
-                        getData(activity, userId);
+                        getData(context, userId);
                     }
                 });
     }
 
-    private static void getData(final Activity activity, final String userId) {
-        DBManager.NewDbDeal(DBManager.SELECT)
+    private static void getData(final Context context, final String userId) {
+        DBManager.dbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GET_MOVE_CHECK_LIST)
                 .params(new String[]{userId})
                 .clazz(DevicemoveEntity.class)
-                .execut(new DbCallBack() {
+                .execut(context, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -111,20 +111,20 @@ public class AppContext extends Application {
                     @Override
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
-                            showUnCheckDialog(activity);
+                            showUnCheckDialog(context);
                             return;
                         }
-                        getApplyUncheckData(activity, userId);
+                        getApplyUncheckData(context, userId);
                     }
                 });
     }
 
-    private  static void getApplyUncheckData(final Activity activity, final String userId) {
-        DBManager.NewDbDeal(DBManager.SELECT)
+    private  static void getApplyUncheckData(final Context context, final String userId) {
+        DBManager.dbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GET_APPLAY_CHECK_LIST)
                 .params(new String[]{userId})
                 .clazz(DeviceapplyEntity.class)
-                .execut(new DbCallBack() {
+                .execut(context, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -138,20 +138,20 @@ public class AppContext extends Application {
                     @Override
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
-                            showUnCheckDialog(activity);
+                            showUnCheckDialog(context);
                             return;
                         }
-                        getDataThree(activity, userId);
+                        getDataThree(context, userId);
                     }
                 });
     }
 
-    private static void getDataThree(final Activity activity, String userId) {
-        DBManager.NewDbDeal(DBManager.SELECT)
+    private static void getDataThree(final Context context, String userId) {
+        DBManager.dbDeal(DBManager.SELECT)
                 .sql(SqlUrl.GET_INSPECTION_CHECK_LIST)
                 .params(new String[]{userId})
                 .clazz(DeviceInspectionEntity.class)
-                .execut(new DbCallBack() {
+                .execut(context, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -165,20 +165,20 @@ public class AppContext extends Application {
                     @Override
                     public void onResponse(List result) {
                         if (result != null && result.size() != 0) {
-                            showUnCheckDialog(activity);
+                            showUnCheckDialog(context);
                         }
                     }
                 });
     }
-    private static void showUnCheckDialog(final Activity activity) {
-        final AlertDialog alertDialog = new AlertDialog.Builder(activity)
+    private static void showUnCheckDialog(final Context context) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle("提示").create();
         alertDialog.setMessage("您有上传的信息没有审核通过，点击确定查看详情。");
         alertDialog.setButton(BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 alertDialog.dismiss();
-                activity.startActivity(new Intent(activity, RecordHistoryActivity.class));
+                context.startActivity(new Intent(context, RecordHistoryActivity.class));
             }
         });
         alertDialog.setButton(BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {

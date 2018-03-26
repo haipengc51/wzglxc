@@ -19,6 +19,7 @@ import com.jiekai.wzglxc.utils.PictureSelectUtils;
 import com.jiekai.wzglxc.utils.StringUtils;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
+import com.jiekai.wzglxc.utils.dbutils.DbDeal;
 import com.jiekai.wzglxc.utils.ftputils.FtpCallBack;
 import com.jiekai.wzglxc.utils.ftputils.FtpManager;
 import com.luck.picture.lib.PictureSelector;
@@ -64,6 +65,8 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
     private String romoteImageName;     //图片远程服务器的名称 123.jpg
     private String localPath;   //图片本地的地址
 
+    private DbDeal eventDbDeal = null;
+
     @Override
     public void initView() {
         setContentView(R.layout.activity_device_applay);
@@ -84,6 +87,14 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
     @Override
     public void initOperation() {
 
+    }
+
+    @Override
+    public void cancleDbDeal() {
+        if (eventDbDeal != null) {
+            dismissProgressDialog();
+            eventDbDeal.cancleDbDeal();
+        }
     }
 
     @Override
@@ -187,8 +198,8 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
      * 开启数据库事务
      */
     private void startEvent() {
-        DBManager.dbDeal(DBManager.START_EVENT)
-                .execut(new DbCallBack() {
+        eventDbDeal = DBManager.dbDeal(DBManager.START_EVENT);
+                eventDbDeal.execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.uploading_db));
@@ -212,12 +223,18 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
      * 插入出库的数据库
      */
     private void insertApplayDevice() {
-        DBManager.dbDeal(DBManager.EVENT_INSERT)
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            deletImage();
+            rollback();
+            return;
+        }
+        eventDbDeal.reset(DBManager.EVENT_INSERT)
                 .sql(SqlUrl.INSERT_APPLAY)
                 .params(new Object[]{inputDuihao.getText().toString(), inputJinghao.getText().toString(),
                         CommonUtils.getDataIfNull(beizhu.getText().toString()), userData.getUSERID(),
                         new Date(new java.util.Date().getTime())})
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -239,10 +256,16 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
     }
 
     private void getInsertId() {
-        DBManager.dbDeal(DBManager.EVENT_SELECT)
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            rollback();
+            deletImage();
+            return;
+        }
+        eventDbDeal.reset(DBManager.EVENT_SELECT)
                 .sql(SqlUrl.SELECT_INSERT_ID)
                 .clazz(LastInsertIdEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -282,10 +305,16 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
             dismissProgressDialog();
             return;
         }
-        DBManager.dbDeal(DBManager.EVENT_INSERT)
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            rollback();
+            deletImage();
+            return;
+        }
+        eventDbDeal.reset(DBManager.EVENT_INSERT)
                 .sql(SqlUrl.INSERT_IAMGE)
                 .params(new String[]{SBBH, romoteImageName, fileSize, imagePath, imageType, Config.doc_sbsq})
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -307,8 +336,12 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
     }
 
     private void rollback() {
-        DBManager.dbDeal(DBManager.ROLLBACK)
-                .execut(new DbCallBack() {
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            return;
+        }
+        eventDbDeal.reset(DBManager.ROLLBACK)
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -327,8 +360,12 @@ public class DeviceApplayActivity extends MyBaseActivity implements View.OnClick
     }
 
     private void commit() {
-        DBManager.dbDeal(DBManager.COMMIT)
-                .execut(new DbCallBack() {
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            return;
+        }
+        eventDbDeal.reset(DBManager.COMMIT)
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 

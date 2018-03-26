@@ -21,6 +21,7 @@ import com.jiekai.wzglxc.entity.DevicemoveEntity;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
+import com.jiekai.wzglxc.utils.dbutils.DbDeal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,11 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
     private List<DeviceUnCheckEntity> dataList = new ArrayList<>();
     private int selectNum;
 
+    private DbDeal recordDbDeal = null;
+    private DbDeal moveDbDeal = null;
+    private DbDeal appleDbDeal = null;
+    private DbDeal inspectionDbDeal = null;
+
     @Override
     public void initView() {
         setContentView(R.layout.activity_record_history);
@@ -72,6 +78,23 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
         }
         setHeaderViewVisible(View.GONE);
         getData();
+    }
+
+    @Override
+    public void cancleDbDeal() {
+        if (recordDbDeal != null) {
+            recordDbDeal.cancleDbDeal();
+        }
+        if (moveDbDeal != null) {
+            moveDbDeal.cancleDbDeal();
+        }
+        if (appleDbDeal != null) {
+            appleDbDeal.cancleDbDeal();
+        }
+        if (inspectionDbDeal != null) {
+            inspectionDbDeal.cancleDbDeal();
+        }
+        dismissProgressDialog();
     }
 
     @Override
@@ -123,11 +146,11 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
             adapter.notifyDataSetChanged();
             setHeaderViewVisible(View.GONE);
         }
-        DBManager.NewDbDeal(DBManager.SELECT)
-                .sql(SqlUrl.GET_RECORD_CHECK_LIST)
+        recordDbDeal = DBManager.dbDeal(DBManager.SELECT);
+                recordDbDeal.sql(SqlUrl.GET_RECORD_CHECK_LIST)
                 .params(new String[]{userData.getUSERID()})
                 .clazz(DevicelogEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.loading_data));
@@ -158,11 +181,11 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                         allSelectFinish();
                     }
                 });
-        DBManager.NewDbDeal(DBManager.SELECT)
-                .sql(SqlUrl.GET_MOVE_CHECK_LIST)
+        moveDbDeal = DBManager.dbDeal(DBManager.SELECT);
+                moveDbDeal.sql(SqlUrl.GET_MOVE_CHECK_LIST)
                 .params(new String[]{userData.getUSERID()})
                 .clazz(DevicemoveEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -193,11 +216,11 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                         allSelectFinish();
                     }
                 });
-        DBManager.NewDbDeal(DBManager.SELECT)
-                .sql(SqlUrl.GET_APPLAY_CHECK_LIST)
+        appleDbDeal = DBManager.dbDeal(DBManager.SELECT);
+                appleDbDeal.sql(SqlUrl.GET_APPLAY_CHECK_LIST)
                 .params(new String[]{userData.getUSERID()})
                 .clazz(DeviceapplyEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -227,11 +250,11 @@ public class RecordHistoryActivity extends MyBaseActivity implements View.OnClic
                         allSelectFinish();
                     }
                 });
-        DBManager.NewDbDeal(DBManager.SELECT)
-                .sql(SqlUrl.GET_INSPECTION_CHECK_LIST)
+        inspectionDbDeal = DBManager.dbDeal(DBManager.SELECT);
+                inspectionDbDeal.sql(SqlUrl.GET_INSPECTION_CHECK_LIST)
                 .params(new String[]{userData.getUSERID()})
                 .clazz(DeviceInspectionEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 

@@ -21,6 +21,7 @@ import com.jiekai.wzglxc.utils.PictureSelectUtils;
 import com.jiekai.wzglxc.utils.StringUtils;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
+import com.jiekai.wzglxc.utils.dbutils.DbDeal;
 import com.jiekai.wzglxc.utils.ftputils.FtpCallBack;
 import com.jiekai.wzglxc.utils.ftputils.FtpManager;
 import com.jiekai.wzglxc.utils.zxing.CaptureActivity;
@@ -72,6 +73,9 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
     private String romoteImageName;     //图片远程服务器的名称 123.jpg
     private String localPath;   //图片本地的地址
 
+    private DbDeal dbDeal = null;
+    private DbDeal eventDbDeal = null;
+
     @Override
     public void getNfcData(String nfcString) {
         if (alertDialog != null) {
@@ -109,6 +113,18 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
     }
 
     @Override
+    public void cancleDbDeal() {
+        if (eventDbDeal != null) {
+            eventDbDeal.cancleDbDeal();
+            dismissProgressDialog();
+        }
+        if (dbDeal != null) {
+            dbDeal.cancleDbDeal();
+            dismissProgressDialog();
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
@@ -139,15 +155,15 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
      *
      * @param id
      */
-    private void getDeviceDataById(String id) {
+    private void getDeviceDataById(final String id) {
         if (StringUtils.isEmpty(id)) {
             return;
         }
-        DBManager.dbDeal(DBManager.SELECT)
-                .sql(SqlUrl.GetDeviceByID)
+        dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                dbDeal.sql(SqlUrl.GetDeviceByID)
                 .params(new String[]{id, id, id})
                 .clazz(DeviceEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.loading_device));
@@ -157,6 +173,7 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
                     public void onError(String err) {
                         alert(err);
                         dismissProgressDialog();
+                        readCardErroDialog.errShowIdDialog(id, true);
                     }
 
                     @Override
@@ -177,15 +194,15 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
      *
      * @param id
      */
-    private void getDeviceDataBySAOMA(String id) {
+    private void getDeviceDataBySAOMA(final String id) {
         if (StringUtils.isEmpty(id)) {
             return;
         }
-        DBManager.dbDeal(DBManager.SELECT)
-                .sql(SqlUrl.GetDeviceBySAOMA)
+        dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                dbDeal.sql(SqlUrl.GetDeviceBySAOMA)
                 .params(new String[]{id})
                 .clazz(DeviceEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.loading_device));
@@ -195,6 +212,7 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
                     public void onError(String err) {
                         alert(err);
                         dismissProgressDialog();
+                        readCardErroDialog.errShowIdDialog(id, false);
                     }
 
                     @Override
@@ -288,8 +306,8 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
      * 开启数据库事务
      */
     private void startEvent() {
-        DBManager.dbDeal(DBManager.START_EVENT)
-                .execut(new DbCallBack() {
+        eventDbDeal = DBManager.dbDeal(DBManager.START_EVENT);
+                eventDbDeal.execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.uploading_db));
@@ -313,11 +331,17 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
      * 插入出库的数据库
      */
     private void insertRecord() {
-        DBManager.dbDeal(DBManager.EVENT_INSERT)
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            deletImage();
+            rollback();
+            return;
+        }
+        eventDbDeal.reset(DBManager.EVENT_INSERT)
                 .sql(SqlUrl.ADD_INSPECTION)
                 .params(new Object[]{deviceEntity.getBH(), new Date(new java.util.Date().getTime()), userData.getUSERID(),
                         CommonUtils.getDataIfNull(beizhu.getText().toString())})
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -339,10 +363,16 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
     }
 
     private void getInsertId() {
-        DBManager.dbDeal(DBManager.EVENT_SELECT)
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            rollback();
+            deletImage();
+            return;
+        }
+        eventDbDeal.reset(DBManager.EVENT_SELECT)
                 .sql(SqlUrl.SELECT_INSERT_ID)
                 .clazz(LastInsertIdEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -382,10 +412,16 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
             dismissProgressDialog();
             return;
         }
-        DBManager.dbDeal(DBManager.EVENT_INSERT)
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            rollback();
+            deletImage();
+            return;
+        }
+        eventDbDeal.reset(DBManager.EVENT_INSERT)
                 .sql(SqlUrl.INSERT_IAMGE)
                 .params(new String[]{SBBH, romoteImageName, fileSize, imagePath, imageType, Config.doc_sbxj})
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -407,8 +443,12 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
     }
 
     private void rollback() {
-        DBManager.dbDeal(DBManager.ROLLBACK)
-                .execut(new DbCallBack() {
+        if(eventDbDeal == null) {
+            dismissProgressDialog();
+            return;
+        }
+        eventDbDeal.reset(DBManager.ROLLBACK)
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -427,8 +467,12 @@ public class DeviceInspectionActivity extends NFCBaseActivity implements View.On
     }
 
     private void commit() {
-        DBManager.dbDeal(DBManager.COMMIT)
-                .execut(new DbCallBack() {
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            return;
+        }
+        eventDbDeal.reset(DBManager.COMMIT)
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 

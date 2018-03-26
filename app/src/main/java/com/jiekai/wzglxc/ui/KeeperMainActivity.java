@@ -21,6 +21,7 @@ import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.jiekai.wzglxc.ui.update.UpdateManager;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
+import com.jiekai.wzglxc.utils.dbutils.DbDeal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,8 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
 
     private List<KeeperEntity> dataList = new ArrayList<KeeperEntity>();
     private KeeperAdapter adapter;
+
+    private DbDeal dbDeal = null;
 
     Handler mHandler = new Handler() {
         @Override
@@ -94,7 +97,15 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
             gridView.setAdapter(adapter);
             gridView.setOnItemClickListener(this);
         }
-        AppContext.getUnCheckedData(this, userData.getUSERID());
+        AppContext.getUnCheckedData(mContext, userData.getUSERID());
+    }
+
+    @Override
+    public void cancleDbDeal() {
+        if (dbDeal != null) {
+            dbDeal.cancleDbDeal();
+            dismissProgressDialog();
+        }
     }
 
     @Override
@@ -107,11 +118,11 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
             } else {
                 isAnimation = true;
                 if (keeperEntity.getActivity() == DeviceInspectionActivity.class) {
-                    DBManager.dbDeal(DBManager.SELECT)
-                            .sql(SqlUrl.LoginRule)
+                    dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                            dbDeal.sql(SqlUrl.LoginRule)
                             .params(new String[]{userData.getUSERID()})
                             .clazz(UserRoleEntity.class)
-                            .execut(new DbCallBack() {
+                            .execut(mContext, new DbCallBack() {
 
                                 @Override
                                 public void onDbStart() {

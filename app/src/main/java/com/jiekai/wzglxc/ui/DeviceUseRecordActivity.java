@@ -25,6 +25,7 @@ import com.jiekai.wzglxc.ui.popup.DeviceCodePopup;
 import com.jiekai.wzglxc.utils.StringUtils;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
+import com.jiekai.wzglxc.utils.dbutils.DbDeal;
 import com.jiekai.wzglxc.utils.localDbUtils.RecordRecentIDColumn;
 import com.jiekai.wzglxc.utils.zxing.CaptureActivity;
 
@@ -70,6 +71,7 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
     private boolean enableNfc = false;
 
     private DeviceCodePopup recentID;
+    private DbDeal dbDeal = null;
 
     @Override
     public void initView() {
@@ -136,6 +138,14 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
     }
 
     @Override
+    public void cancleDbDeal() {
+        if (dbDeal != null) {
+            dbDeal.cancleDbDeal();
+            dismissProgressDialog();
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
@@ -175,16 +185,16 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
      *
      * @param cardId
      */
-    private void getRecordList(String cardId) {
+    private void getRecordList(final String cardId) {
         if (StringUtils.isEmpty(cardId)) {
             alert(R.string.get_id_err);
             return;
         }
-        DBManager.dbDeal(DBManager.SELECT)
-                .sql(SqlUrl.Get_Record_List)
+        dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                dbDeal.sql(SqlUrl.Get_Record_List)
                 .params(new String[]{cardId, cardId, cardId})
                 .clazz(DevicelogsortEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.loading_data));
@@ -194,6 +204,7 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
                     public void onError(String err) {
                         alert(err);
                         dismissProgressDialog();
+                        readCardErroDialog.errShowIdDialog(cardId, true);
                     }
 
                     @Override
@@ -225,16 +236,16 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
      *
      * @param cardId
      */
-    private void getRecordListBySAOMA(String cardId) {
+    private void getRecordListBySAOMA(final String cardId) {
         if (StringUtils.isEmpty(cardId)) {
             alert(R.string.get_id_err);
             return;
         }
-        DBManager.dbDeal(DBManager.SELECT)
-                .sql(SqlUrl.Get_Record_List_by_SAOMA)
+        dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                dbDeal.sql(SqlUrl.Get_Record_List_by_SAOMA)
                 .params(new String[]{cardId})
                 .clazz(DevicelogsortEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.loading_data));
@@ -244,6 +255,7 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
                     public void onError(String err) {
                         alert(err);
                         dismissProgressDialog();
+                        readCardErroDialog.errShowIdDialog(cardId, false);
                     }
 
                     @Override
@@ -318,11 +330,11 @@ public class DeviceUseRecordActivity extends NFCBaseActivity implements View.OnC
             alert(R.string.get_bh_faild);
             return;
         }
-        DBManager.dbDeal(DBManager.SELECT)
-                .sql(SqlUrl.Get_Record_List_by_BH)
+        dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                dbDeal.sql(SqlUrl.Get_Record_List_by_BH)
                 .params(new String[]{BH})
                 .clazz(DevicelogsortEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.loading_data));
