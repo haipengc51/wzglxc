@@ -105,6 +105,11 @@ public final class CaptureActivity extends MyBaseActivity implements SurfaceHold
     }
 
     @Override
+    public void cancleDbDeal() {
+
+    }
+
+    @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 

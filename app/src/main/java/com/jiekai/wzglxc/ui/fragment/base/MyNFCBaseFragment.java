@@ -2,6 +2,7 @@ package com.jiekai.wzglxc.ui.fragment.base;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import butterknife.ButterKnife;
 
 public abstract class MyNFCBaseFragment extends Fragment {
     public MyBaseActivity mActivity;
+    public Context mContext;
     private ProgressDialog progressDialog = null;
 
     public abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
@@ -36,6 +38,7 @@ public abstract class MyNFCBaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mActivity = (MyBaseActivity) getActivity();
+        mContext = getActivity().getApplicationContext();
         View view = initView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, view);
         initData();

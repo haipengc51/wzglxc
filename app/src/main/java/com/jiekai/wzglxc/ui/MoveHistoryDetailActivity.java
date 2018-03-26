@@ -21,6 +21,7 @@ import com.jiekai.wzglxc.utils.PictureSelectUtils;
 import com.jiekai.wzglxc.utils.StringUtils;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
+import com.jiekai.wzglxc.utils.dbutils.DbDeal;
 import com.jiekai.wzglxc.utils.ftputils.FtpCallBack;
 import com.jiekai.wzglxc.utils.ftputils.FtpManager;
 import com.luck.picture.lib.PictureSelector;
@@ -74,6 +75,9 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
     private String localPath;   //图片本地的地址
     private boolean isChooseImage = false;  //是否重新上传了图片
 
+    private DbDeal dbDeal = null;
+    private DbDeal eventDbDeal = null;
+
     @Override
     public void initView() {
         setContentView(R.layout.activity_move_history_detail);
@@ -103,6 +107,18 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
         } else {
             alert(R.string.get_bh_faild);
             finish();
+        }
+    }
+
+    @Override
+    public void cancleDbDeal() {
+        if (eventDbDeal != null) {
+            eventDbDeal.cancleDbDeal();
+            dismissProgressDialog();
+        }
+        if (dbDeal != null) {
+            dbDeal.cancleDbDeal();
+            dismissProgressDialog();
         }
     }
 
@@ -218,8 +234,8 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
      * 开启数据库事务
      */
     private void startEvent() {
-        DBManager.dbDeal(DBManager.START_EVENT)
-                .execut(new DbCallBack() {
+        eventDbDeal = DBManager.dbDeal(DBManager.START_EVENT);
+                eventDbDeal.execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
                         showProgressDialog(getResources().getString(R.string.uploading_db));
@@ -243,12 +259,18 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
      * 插入记录的数据库
      */
     private void insertRecord() {
-        DBManager.dbDeal(DBManager.EVENT_UPDATA)
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            deletImage();
+            rollback();
+            return;
+        }
+        eventDbDeal.reset(DBManager.EVENT_UPDATA)
                 .sql(SqlUrl.UPDATE_MOVE)
                 .params(new Object[]{duihao.getText().toString(), jinghao.getText().toString(),
                         new Date(new java.util.Date().getTime()), userData.getUSERID(),
                         CommonUtils.getDataIfNull(beizhu.getText().toString()), currentDatas.getID()})
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -288,10 +310,16 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
             dismissProgressDialog();
             return;
         }
-        DBManager.dbDeal(DBManager.EVENT_UPDATA)
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            rollback();
+            deletImage();
+            return;
+        }
+        eventDbDeal.reset(DBManager.EVENT_UPDATA)
                 .sql(SqlUrl.UPDATE_IMAGE)
                 .params(new String[]{romoteImageName, fileSize, imagePath, imageType, SBBH, Config.doc_sbzc})
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -314,7 +342,6 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
 
     /**
      * 删除上次图片
-     */
     private void deletRemotImage() {
         DBManager.dbDeal(DBManager.SELECT)
                 .sql(SqlUrl.Get_Image_Path)
@@ -364,10 +391,15 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
                     }
                 });
     }
+     */
 
     private void rollback() {
-        DBManager.dbDeal(DBManager.ROLLBACK)
-                .execut(new DbCallBack() {
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            return;
+        }
+        eventDbDeal.reset(DBManager.ROLLBACK)
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -386,8 +418,12 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
     }
 
     private void commit() {
-        DBManager.dbDeal(DBManager.COMMIT)
-                .execut(new DbCallBack() {
+        if (eventDbDeal == null) {
+            dismissProgressDialog();
+            return;
+        }
+        eventDbDeal.reset(DBManager.COMMIT)
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 
@@ -414,11 +450,11 @@ public class MoveHistoryDetailActivity extends MyBaseActivity implements View.On
             alert(R.string.get_image_fail);
             return;
         }
-        DBManager.dbDeal(DBManager.SELECT)
-                .sql(SqlUrl.Get_Image_Path)
+        dbDeal = DBManager.dbDeal(DBManager.SELECT);
+                dbDeal.sql(SqlUrl.Get_Image_Path)
                 .params(new Object[]{id, Config.doc_sbzc})
                 .clazz(DevicedocEntity.class)
-                .execut(new DbCallBack() {
+                .execut(mContext, new DbCallBack() {
                     @Override
                     public void onDbStart() {
 

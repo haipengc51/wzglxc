@@ -53,7 +53,7 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
             switch (msg.what) {
                 case HANDLER_CHENGE_UPDATE:     //延时检测是否有更新
                     UpdateManager updateManager = new UpdateManager(KeeperMainActivity.this);
-                    updateManager.getRemoteVersion();
+                    updateManager.getRemoteVersion(mContext);
                     break;
             }
         }
@@ -97,7 +97,7 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
             gridView.setAdapter(adapter);
             gridView.setOnItemClickListener(this);
         }
-        AppContext.getUnCheckedData(mContext, userData.getUSERID());
+        AppContext.getUnCheckedData(this, userData.getUSERID());
     }
 
     @Override
