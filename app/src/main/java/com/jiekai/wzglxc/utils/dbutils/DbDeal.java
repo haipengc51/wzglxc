@@ -274,6 +274,9 @@ public class DbDeal extends AsynInterface {
             if (preparedStatement != null && !preparedStatement.isClosed()) {
                 preparedStatement.cancel();
             }
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

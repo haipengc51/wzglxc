@@ -31,10 +31,9 @@
         <activity android:name="com.jiekai.wzglxc.ui.LoginActivity"
             android:screenOrientation="portrait"/>
         <activity android:name="com.jiekai.wzglxc.ui.KeeperMainActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
         <activity android:name="com.jiekai.wzglxc.utils.zxing.CaptureActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.jiekai.wzglxc.ui.DeviceOutListActivity"
             android:screenOrientation="portrait"/>
         <activity android:name="com.jiekai.wzglxc.ui.DeviceScrapActivity"
             android:label="@string/device_scrap"
