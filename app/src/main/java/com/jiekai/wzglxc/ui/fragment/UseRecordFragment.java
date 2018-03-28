@@ -71,7 +71,6 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
     private String romoteImageName;     //图片远程服务器的名称 123.jpg
     private String localPath;   //图片本地的地址
 
-    private DbDeal dbDeal = null;
     private DbDeal eventDbDeal = null;
 
     public static UseRecordFragment getInstance(String title, String bh) {
@@ -108,6 +107,14 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
                 .setTitle("")
                 .setMessage(getResources().getString(R.string.please_nfc))
                 .create();
+    }
+
+    @Override
+    public void cancleDbDeal() {
+        if (eventDbDeal != null) {
+            eventDbDeal.cancleDbDeal();
+            dismissProgressDialog();
+        }
     }
 
     /**
@@ -421,8 +428,19 @@ public class UseRecordFragment extends MyNFCBaseFragment implements View.OnClick
                     public void onResponse(List result) {
                         alert(R.string.commit_record_success);
                         dismissProgressDialog();
+                        //成功之后做点操作
+                        refreshView();
                     }
                 });
+    }
+
+    private void refreshView() {
+        if (duihao != null && jinghao != null && beizhu != null && recordImage != null) {
+            duihao.setText("");
+            jinghao.setText("");
+            beizhu.setText("");
+            recordImage.setImageResource(R.drawable.ic_choose_image);
+        }
     }
 
     @Override

@@ -312,7 +312,7 @@ public class DbDeal extends AsynInterface {
                     e.printStackTrace();
                 }
             }
-        } catch (SQLException e1) {
+        } catch (Exception e1) {
             e1.printStackTrace();
         }
         return list;

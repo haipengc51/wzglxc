@@ -3,9 +3,11 @@ package com.jiekai.wzglxc.ui.fragment.base;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,8 @@ public abstract class MyNFCBaseFragment extends Fragment {
     public abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
     public abstract void initData();
     public abstract void initOperation();
+    public abstract void cancleDbDeal();
+
     /**
      * 得到nfc的信息
      * @param nfcString
@@ -59,6 +63,14 @@ public abstract class MyNFCBaseFragment extends Fragment {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(mActivity);
             progressDialog.setTitle(getResources().getString(R.string.please_wait));
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    cancleDbDeal();
+                    return false;
+                }
+            });
         }
         progressDialog.setMessage(msg);
         progressDialog.show();
@@ -68,5 +80,12 @@ public abstract class MyNFCBaseFragment extends Fragment {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissProgressDialog();
+        cancleDbDeal();
     }
 }

@@ -101,7 +101,7 @@ public class FTPUtils {
         String upFielPath = remotePath;
         if (!ftpClient.isConnected()) {
             if (!initFTPSetting(FTPUrl,  FTPPort,  UserName,  UserPassword)) {
-                return "连接服务器失败";
+                return "连接服务器失败，请检查网络";
             }
         }
         try {
@@ -172,8 +172,8 @@ public class FTPUtils {
         doStart(plantFrom, ftpCallBack);
         if (!ftpClient.isConnected()) {
             if (!initFTPSetting(FTPUrl,  FTPPort,  UserName,  UserPassword)) {
-                doFail(plantFrom, ftpCallBack, "连接服务器失败");
-                return "连接服务器失败";
+                doFail(plantFrom, ftpCallBack, "连接服务器失败，请检查网络");
+                return "连接服务器失败，请检查网络";
             }
         }
         try {
@@ -208,9 +208,6 @@ public class FTPUtils {
                     while ((onceReadSize = inputStream.read(bytes)) != -1) {
                         outputStream.write(bytes, 0, onceReadSize);
                         localSize += onceReadSize;
-                        if (localSize >= 4020000) {
-                            Log.i("liu", "dada");
-                        }
                         int process = (int) (localSize / step);
                         if (process % 3 == 0){
                             doProgress(plantFrom, ftpCallBack, allSize, localSize, process);
