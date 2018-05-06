@@ -1,9 +1,14 @@
 package com.jiekai.wzglxc.ui;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -19,6 +24,7 @@ import com.jiekai.wzglxc.entity.KeeperEntity;
 import com.jiekai.wzglxc.entity.UserRoleEntity;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.jiekai.wzglxc.ui.update.UpdateManager;
+import com.jiekai.wzglxc.utils.AndroidWakeLock;
 import com.jiekai.wzglxc.utils.dbutils.DBManager;
 import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
 import com.jiekai.wzglxc.utils.dbutils.DbDeal;
@@ -46,6 +52,7 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
 
     private DbDeal dbDeal = null;
 
+
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -62,6 +69,7 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState == null) {
             mHandler.sendEmptyMessageDelayed(HANDLER_CHENGE_UPDATE, 1000 * 2);
         }
@@ -70,6 +78,7 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
     @Override
     public void initView() {
         setContentView(R.layout.activity_keeper_main);
+        addPermission();
     }
 
     @Override
@@ -88,6 +97,7 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
         dataList.add(new KeeperEntity(getResources().getString(R.string.device_applay), DeviceApplayActivity.class));
         dataList.add(new KeeperEntity(getResources().getString(R.string.record_check_result), RecordHistoryActivity.class));
         dataList.add(new KeeperEntity(getResources().getString(R.string.logout), LogOutActivity.class));
+        dataList.add(new KeeperEntity(getResources().getString(R.string.bule_connect), BlueToothActivity.class));
     }
 
     @Override
@@ -160,6 +170,26 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
         }
     }
 
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+    private void addPermission()  {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Android M Permission check
+            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+            }
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_COARSE_LOCATION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // TODO request success
+                }
+                break;
+        }
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -182,5 +212,10 @@ public class KeeperMainActivity extends MyBaseActivity implements AdapterView.On
             startActivity(new Intent(mActivity, LoginActivity.class));
             finish();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

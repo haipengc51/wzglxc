@@ -93,6 +93,7 @@
     <string name="device_num">设备数量</string>
     <string name="cancle">取消</string>
     <string name="logout">退出登录</string>
+    <string name="bule_connect">蓝牙连接</string>
     <string name="click_again_finish">再次点击退出物资管理</string>
     <string name="input_jinghao">请输入井号</string>
     <string name="please_input_jinghao">请输入井号</string>
@@ -165,4 +166,9 @@
     <string name="currentsize">已下载：%1s MB</string>
     <string name="allsize">总大小：%1s MB</string>
     <string name="network_break">没有网络连接，请打开网络连接</string>
+    <string name="reset">重置</string>
+    <string name="connect">连接</string>
+    <string name="breake">断开</string>
+    <string name="search_blue_first">请先搜索到蓝牙设备</string>
+    <string name="please_choose_blue">请选择一个要连接的蓝牙设备</string>
 </resources>

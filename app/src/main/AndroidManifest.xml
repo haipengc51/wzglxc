@@ -10,6 +10,12 @@
     <uses-permission android:name="android.permission.VIBRATE"/>    <!--zxing震动权限-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <uses-feature android:name="android.hardware.nfc" android:required="true"/> <!--使用者必须有nfc功能-->
 
@@ -83,6 +89,12 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.DeviceApplayDetailActivity"
             android:label="@string/device_applay_detail"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.BlueToothActivity"
+            android:label="@string/bule_connect"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.Sub1TabActivity"
+            android:label="@string/bule_connect"
             android:screenOrientation="portrait"/>
     </application>
 
