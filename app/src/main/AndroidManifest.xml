@@ -93,9 +93,6 @@
         <activity android:name=".ui.BlueToothActivity"
             android:label="@string/bule_connect"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.Sub1TabActivity"
-            android:label="@string/bule_connect"
-            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

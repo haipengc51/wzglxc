@@ -35,4 +35,5 @@ dependencies {
     compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.7'
     compile 'com.google.code.gson:gson:2.6.2'
     compile files('libs/ModuleAPI_Android_BT.jar')
+    compile 'org.greenrobot:eventbus:3.1.1'
 }

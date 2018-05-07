@@ -169,6 +169,11 @@
     <string name="reset">重置</string>
     <string name="connect">连接</string>
     <string name="breake">断开</string>
-    <string name="search_blue_first">请先搜索到蓝牙设备</string>
-    <string name="please_choose_blue">请选择一个要连接的蓝牙设备</string>
+    <string name="search_blue_first">请扫描并选中一个蓝牙读写器</string>
+    <string name="please_choose_blue">请选中一个蓝牙读写器</string>
+    <string name="connect_blue_faild">连接蓝牙设备失败</string>
+    <string name="match_blue_faild">匹配蓝牙设备失败</string>
+    <string name="connect_blue_service_failed">连接蓝牙设备服务失败</string>
+    <string name="Constr_connectblueokthentoreader">连接蓝牙设备成功,将连接读写器</string>
+    <string name="connected">已连接</string>
 </resources>

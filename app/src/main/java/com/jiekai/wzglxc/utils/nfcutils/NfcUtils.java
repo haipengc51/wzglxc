@@ -92,7 +92,7 @@ public class NfcUtils {
         return bytesToHexString(dataId);// 字符序列转换为16进制字符串
     }
 
-    private static String bytesToHexString(byte[] src) {
+    public static String bytesToHexString(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder();
 
         if (src == null || src.length <= 0) {

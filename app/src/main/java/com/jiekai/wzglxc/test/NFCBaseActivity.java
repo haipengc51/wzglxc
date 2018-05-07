@@ -9,6 +9,11 @@ import android.support.annotation.Nullable;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.jiekai.wzglxc.ui.dialog.ReadCardErroDialog;
 import com.jiekai.wzglxc.utils.nfcutils.NfcUtils;
+import com.silionmodule.TagReadData;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by laowu on 2017/12/1.
@@ -34,6 +39,7 @@ public abstract class NFCBaseActivity extends MyBaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         readCardErroDialog = new ReadCardErroDialog(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -65,5 +71,24 @@ public abstract class NFCBaseActivity extends MyBaseActivity {
         if (nfcEnable) {
             getNfcData(NfcUtils.getNFCNum(intent));
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(TagReadData data) {
+        if (nfcEnable) {
+            if (data.AData() != null && data.AData().length == 8) {
+                getNfcData(NfcUtils.bytesToHexString(data.AData()));
+                alert(NfcUtils.bytesToHexString(data.AData()));
+            } else {
+                getNfcData(data.EPCHexstr());
+                alert(data.EPCHexstr());
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

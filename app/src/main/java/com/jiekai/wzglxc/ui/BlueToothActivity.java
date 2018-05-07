@@ -1,22 +1,27 @@
 package com.jiekai.wzglxc.ui;
 
+import android.bluetooth.BluetoothDevice;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bth.api.cls.BlueTooth4_C;
 import com.bth.api.cls.CommBlueDev;
 import com.bth.api.cls.Comm_Bluetooth;
 import com.jiekai.wzglxc.AppContext;
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.adapter.BlueListAdapter;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
+import com.silionmodule.HardWareDetector;
+import com.silionmodule.ParamNames;
+import com.silionmodule.Reader;
+import com.silionmodule.ReaderType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +36,8 @@ import butterknife.BindView;
  */
 
 public class BlueToothActivity extends MyBaseActivity implements View.OnClickListener {
+    private static final int TOAST = 0;
+
     @BindView(R.id.back)
     ImageView back;
     @BindView(R.id.title)
@@ -49,15 +56,18 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
     TextView tvBlueBreak;
     private AppContext appContext;
 
+    private MyHandler myHandler = new MyHandler();
     private BlueListAdapter adapter;
     private Map<String, CommBlueDev> blueDevice = new HashMap<>();
     private List<CommBlueDev> dataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         appContext = (AppContext) getApplication();
-        appContext.comm_bluetooth = new Comm_Bluetooth(this);
+        if (appContext.CommBth == null) {
+            appContext.CommBth = new Comm_Bluetooth(this);
+        }
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -67,6 +77,9 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
 
     @Override
     public void initData() {
+        title.setText(R.string.bule_connect);
+
+        back.setOnClickListener(this);
         btSearchBlue.setOnClickListener(this);
         btSearchReset.setOnClickListener(this);
         tvBlueConnect.setOnClickListener(this);
@@ -82,6 +95,16 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
             lvBlueList.setLayoutManager(linearLayoutManager);
             lvBlueList.setAdapter(adapter);
         }
+        if (appContext.CommBth.ConnectState() == Comm_Bluetooth.CONNECTED) {
+            if (appContext.connectedBlue != null &&
+                    appContext.connectedBlue.getAddress().equals(appContext.CommBth.GetConnectAddr())) {
+                dataList.clear();
+                dataList.add(appContext.connectedBlue);
+                adapter.setSelection(0);
+                adapter.notifyDataSetChanged();
+                tvBlueConnect.setText(getResources().getString(R.string.connected));
+            }
+        }
     }
 
     @Override
@@ -92,6 +115,9 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.back:
+                finish();
+                break;
             case R.id.bt_search_blue:
                 searchBlueTooth();
                 break;
@@ -123,7 +149,7 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
 
             @Override
             protected Object doInBackground(Object[] params) {
-                return appContext.comm_bluetooth.StartSearch(finalSelectoption, searchCallback);
+                return appContext.CommBth.StartSearch(finalSelectoption, searchCallback);
             }
 
             @Override
@@ -133,16 +159,29 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
                     Toast.makeText(BlueToothActivity.this, "正在搜索蓝牙设备...", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(BlueToothActivity.this, "搜索蓝牙失败：" + result, Toast.LENGTH_SHORT).show();
-                    appContext.comm_bluetooth.ResetBlueTooth();
+                    appContext.CommBth.ResetBlueTooth();
                 }
             }
         };
         asyncTask.execute();
     }
 
+    private class MyHandler extends android.os.Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case TOAST:
+                    alert((String) msg.obj);
+                    break;
+            }
+        }
+    }
+
     private void resetSearch() {
-        if (appContext.comm_bluetooth != null) {
-            appContext.comm_bluetooth.ResetBlueTooth();
+        if (appContext.CommBth != null) {
+            appContext.CommBth.ResetBlueTooth();
         }
     }
 
@@ -156,12 +195,96 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
             alert(R.string.please_choose_blue);
             return;
         }
-        CommBlueDev dev = dataList.get(currentPosition);
+        final CommBlueDev dev = dataList.get(currentPosition);
 
+        appContext.CommBth.StopSearch();
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+                if (dev.getType() == 1) {
+                    if (appContext.CommBth.ToMatch(dev.getAddress()) == BluetoothDevice.BOND_BONDED) {
+                        int re = appContext.CommBth.Connect(dev.getAddress(), 2);
+                        if (re == 0) {
+                            ConnectEvent();
+                        } else {
+                            Message message = new Message();
+                            message.what = TOAST;
+                            message.obj = getResources().getString(R.string.connect_blue_faild);
+                            myHandler.sendMessage(message);
+                        }
+
+                    } else {
+                        Message message = new Message();
+                        message.what = TOAST;
+                        message.obj = getResources().getString(R.string.match_blue_faild);
+                        myHandler.sendMessage(message);
+                    }
+                } else {
+                    int re = -1;
+                    if (appContext.CommBth.ConnectState() != Comm_Bluetooth.CONNECTED
+                            && appContext.CommBth.GetConnectAddr() != dev.getAddress()) {
+                        re = appContext.CommBth.Connect(dev.getAddress(), 4);
+                    } else {
+                        re = 0;
+                    }
+                    if (re == 0) {
+                        String Addr = "", Uuid = "", Uuid_read = "", Uuid_write = "", Uuid_pass = "", Val_pass = "";
+                        boolean needpwd = false;
+                        Uuid = "0000ffe0-0000-1000-8000-00805f9b34fb";
+                        Uuid_read = "0000ffe1-0000-1000-8000-00805f9b34fb";
+                        Uuid_write = "0000ffe1-0000-1000-8000-00805f9b34fb";
+
+                        List<BlueTooth4_C.BLEServices> lbe = appContext.CommBth
+                                .FindServices(6000);
+                        if (lbe != null && lbe.size() > 0) {
+                            appContext.CommBth.SetServiceUUIDs(Uuid,
+                                    Uuid_read, Uuid_write);
+
+                            Message message = new Message();
+                            message.what = TOAST;
+                            message.obj = getResources().getString(R.string.Constr_connectblueokthentoreader);
+                            myHandler.sendMessage(message);
+
+                            appContext.BackResult = 1;
+                            ConnectEvent();
+                            return;
+                        } else {
+                            appContext.CommBth.DisConnect();
+                            Message message = new Message();
+                            message.what = TOAST;
+                            message.obj = getResources().getString(R.string.connect_blue_service_failed);
+                            myHandler.sendMessage(message);
+                            return;
+                        }
+                    } else {
+                        Message message = new Message();
+                        message.what = TOAST;
+                        message.obj = appContext.Constr_connectbluesetfail + String.valueOf(re);
+                        myHandler.sendMessage(message);
+                    }
+                }
+//            }
+//        }).start();
     }
 
     private void disConnectBlue() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appContext.CommBth.StopSearch();
+                if (appContext.Mreader != null) {
+                    appContext.Mreader.DisConnect();
+                    appContext.CommBth.DisConnect();
+                }
+            }
+        }).start();
 
+        this.btSearchBlue.setEnabled(true);
+        tvBlueBreak.setEnabled(false);
+        tvBlueConnect.setEnabled(true);
+        tvBlueConnect.setText(R.string.connect);
+        adapter.setSelection(-1);
     }
 
     private Comm_Bluetooth.SearchCallback searchCallback = new Comm_Bluetooth.SearchCallback() {
@@ -175,9 +298,89 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
         }
     };
 
+    private void ConnectEvent() {
+        boolean isok = false;
+        if (appContext.CommBth.getRemoveType() == 4) {
+            isok = appContext.CommBth.ConnectState() == Comm_Bluetooth.CONNECTED
+                    && appContext.CommBth.IssetUUID() == true
+                    && appContext.BackResult == 1;
+        } else {
+            isok = true;
+        }
+        if (isok) {
+            try {
+                appContext.Mode = 1;
+                appContext.CommBth.Comm_SetParam(ParamNames.Communication_mode,
+                        appContext.Mode);
+
+                appContext.CommBth.SetFrameParams(20, 100);
+                appContext.CommBth.Comm_SetParam(
+                        ParamNames.Communication_module,
+                        HardWareDetector.Module_Type.MODOULE_SLR5100);
+
+                int antc = 1;
+//                appContext.Rparams.antportc = antc;
+                appContext.Mreader = Reader.Create(ReaderType.AntTypeE.valueOf(antc),
+                        appContext.CommBth);
+//                appContext.Mreader.paramSet(ParamNames.InitMode_READ_BANK,"2");
+                ConnectHandleUI();
+
+                Message message = new Message();
+                message.what = TOAST;
+                message.obj = AppContext.Constr_connectbluesetok;
+                myHandler.sendMessage(message);
+            } catch (Exception ex) {
+                appContext.CommBth.DisConnect();
+                Message message = new Message();
+                message.what = TOAST;
+                message.obj = AppContext.Constr_createreaderok;
+                myHandler.sendMessage(message);
+            }
+
+        } else {
+            appContext.CommBth.DisConnect();
+            Message message = new Message();
+            message.what = TOAST;
+            message.obj = AppContext.Constr_connectblueserfail;
+            myHandler.sendMessage(message);
+        }
+    }
+
+    private void ConnectHandleUI() {
+        btSearchBlue.setEnabled(false);
+        this.tvBlueConnect.setEnabled(false);
+        this.tvBlueBreak.setEnabled(true);
+        if(appContext.CommBth.UUID_SERVICE.equals("0000fea0-0000-1000-8000-00805f9b34fb")) {
+            appContext.CommBth.SetUUID("0000fea0-0000-1000-8000-00805f9b34fb",
+                    "0000fea3-0000-1000-8000-00805f9b34fb", false);
+            appContext.CommBth.SetUUID("0000fea0-0000-1000-8000-00805f9b34fb",
+                    "0000fea4-0000-1000-8000-00805f9b34fb", false);
+            appContext.CommBth.SetUUID("0000fea0-0000-1000-8000-00805f9b34fb",
+                    "0000fea5-0000-1000-8000-00805f9b34fb", false);
+            appContext.CommBth.SetUUID("0000fea0-0000-1000-8000-00805f9b34fb",
+                    "0000fea6-0000-1000-8000-00805f9b34fb", false);
+            appContext.CommBth.SetUUID("0000fea0-0000-1000-8000-00805f9b34fb",
+                    "0000fea7-0000-1000-8000-00805f9b34fb", false);
+        }
+
+        appContext.connectok=true;
+        appContext.readNfcData();
+
+        int currentPosition = adapter.getCurrentPosition();
+        if (currentPosition == -1) {
+            Message message = new Message();
+            message.what = TOAST;
+            message.obj = getResources().getString(R.string.please_choose_blue);
+            myHandler.sendMessage(message);
+            return;
+        }
+        appContext.connectedBlue = dataList.get(currentPosition);
+        tvBlueConnect.setText(getResources().getString(R.string.connected));
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
-        appContext.comm_bluetooth.StopSearch();
+        appContext.CommBth.StopSearch();
     }
 }

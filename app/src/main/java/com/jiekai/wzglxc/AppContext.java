@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.widget.TabHost;
+import android.widget.Toast;
 
+import com.bth.api.cls.CommBlueDev;
 import com.bth.api.cls.Comm_Bluetooth;
 import com.function.SPconfig;
 import com.jiekai.wzglxc.config.Config;
@@ -24,10 +26,16 @@ import com.jiekai.wzglxc.utils.dbutils.DbCallBack;
 import com.jiekai.wzglxc.utils.dbutils.DbDeal;
 import com.jiekai.wzglxc.utils.ftputils.FtpManager;
 import com.jiekai.wzglxc.utils.localDbUtils.DBHelper;
+import com.silionmodule.DataListener;
 import com.silionmodule.Reader;
+import com.silionmodule.ReaderException;
+import com.silionmodule.StatusEventListener;
 import com.silionmodule.TAGINFO;
 import com.silionmodule.TagFilter;
 import com.silionmodule.TagOp;
+import com.silionmodule.TagReadData;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,9 +50,6 @@ import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 public class AppContext extends Application {
     public static DBHelper dbHelper;
-
-    public Comm_Bluetooth comm_bluetooth;
-    public Activity acty;
 
     @Override
     public void onCreate() {
@@ -202,6 +207,44 @@ public class AppContext extends Application {
         alertDialog.show();
     }
 
+
+    public void readNfcData() {
+        Mreader.addStatusListener(SL);
+        {
+            try {
+                Mreader.addDataListener(DL);
+                Mreader.StartTagEvent();
+                isread = true;
+
+            } catch (ReaderException e) {
+                Toast.makeText(this, AppContext.Constr_SetFaill + e.GetMessage(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+    }
+
+    private StatusEventListener SL = new StatusEventListener() {
+        @Override
+        public void StatusCatch(Object t) {
+            if (CommBth.ConnectState() != Comm_Bluetooth.CONNECTED) {
+                CommBth.ReConnect();
+            }
+        }
+    };
+
+    private DataListener DL = new DataListener() {
+
+        @Override
+        public void ReadData(TagReadData[] t) {
+            if (t != null && t.length > 0) {
+                for (int i=0; i<t.length; i++) {
+                    EventBus.getDefault().post(t[i]);
+                }
+            }
+        }
+    };
+
+
     //常量
     //*
     public static String Constr_READ = "读";
@@ -314,6 +357,7 @@ public class AppContext extends Application {
     public Map<String,TAGINFO> TagsMap=new LinkedHashMap<String,TAGINFO>();//有序
 
     public Comm_Bluetooth CommBth;
+    public CommBlueDev connectedBlue;
     public Activity Mact;
     public int Mode;
     public Map<String, String> m;

@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    android:id="@+id/blue_linear"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_blue_name"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/marginTop10"
+        android:layout_marginRight="@dimen/marginTop10"
+        android:layout_marginTop="@dimen/marginTop10"
         android:gravity="center_vertical"
         android:lines="1"
         android:text="1243"
-        android:textSize="@dimen/content_text_size"
+        android:textColor="@color/text_content_color"
+        android:textSize="@dimen/content_text_size" />
+
+    <TextView
+        android:id="@+id/tv_blue_addr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/marginTop5"
+        android:layout_marginBottom="@dimen/marginTop10"
+        android:layout_marginLeft="@dimen/marginTop10"
+        android:layout_marginRight="@dimen/marginTop10"
+        android:lines="1"
+        android:gravity="center_vertical"
+        android:text="121221"
+        android:textSize="@dimen/discribe_text_size"
         android:textColor="@color/text_content_color"/>
 
 </LinearLayout>

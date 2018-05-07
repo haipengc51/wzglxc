@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bth.api.cls.CommBlueDev;
@@ -41,14 +42,17 @@ public class BlueListAdapter extends BaseRecycleViewAdapter {
         MyViewHolder myViewHolder = (MyViewHolder) holder;
         CommBlueDev item = (CommBlueDev) dataList.get(position);
         myViewHolder.blueName.setText(item.getName());
+        myViewHolder.blueAddr.setText(item.getAddress());
         if (position == selection) {
-            myViewHolder.blueName.setBackgroundColor(context.getResources().getColor(R.color.main_color));
+            myViewHolder.blueLinear.setBackgroundColor(context.getResources().getColor(R.color.main_color));
             myViewHolder.blueName.setTextColor(context.getResources().getColor(R.color.white));
+            myViewHolder.blueAddr.setTextColor(context.getResources().getColor(R.color.white));
         } else {
-            myViewHolder.blueName.setBackgroundColor(context.getResources().getColor(R.color.white));
+            myViewHolder.blueLinear.setBackgroundColor(context.getResources().getColor(R.color.white));
             myViewHolder.blueName.setTextColor(context.getResources().getColor(R.color.text_content_color));
+            myViewHolder.blueAddr.setTextColor(context.getResources().getColor(R.color.text_content_color));
         }
-        myViewHolder.blueName.setOnClickListener(new View.OnClickListener() {
+        myViewHolder.blueLinear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setSelection(position);
@@ -62,11 +66,15 @@ public class BlueListAdapter extends BaseRecycleViewAdapter {
     }
 
     private class MyViewHolder extends ViewHolderHelper {
+        private LinearLayout blueLinear;
         private TextView blueName;
+        private TextView blueAddr;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            blueLinear = (LinearLayout) itemView.findViewById(R.id.blue_linear);
             blueName = (TextView) itemView.findViewById(R.id.tv_blue_name);
+            blueAddr = (TextView) itemView.findViewById(R.id.tv_blue_addr);
         }
     }
 }
