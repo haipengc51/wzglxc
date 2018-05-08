@@ -17,6 +17,7 @@ import com.bth.api.cls.Comm_Bluetooth;
 import com.jiekai.wzglxc.AppContext;
 import com.jiekai.wzglxc.R;
 import com.jiekai.wzglxc.adapter.BlueListAdapter;
+import com.jiekai.wzglxc.entity.BlueToothEntity;
 import com.jiekai.wzglxc.ui.base.MyBaseActivity;
 import com.silionmodule.HardWareDetector;
 import com.silionmodule.ParamNames;
@@ -59,7 +60,7 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
     private MyHandler myHandler = new MyHandler();
     private BlueListAdapter adapter;
     private Map<String, CommBlueDev> blueDevice = new HashMap<>();
-    private List<CommBlueDev> dataList = new ArrayList<>();
+    private List<BlueToothEntity> dataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,10 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
             if (appContext.connectedBlue != null &&
                     appContext.connectedBlue.getAddress().equals(appContext.CommBth.GetConnectAddr())) {
                 dataList.clear();
-                dataList.add(appContext.connectedBlue);
+                blueDevice.clear();
+                blueDevice.put(appContext.connectedBlue.getAddress(), appContext.connectedBlue);
+                dataList.add(new BlueToothEntity(appContext.connectedBlue.getName(),
+                        appContext.connectedBlue.getAddress(), appContext.connectedBlue));
                 adapter.setSelection(0);
                 adapter.notifyDataSetChanged();
                 tvBlueConnect.setText(getResources().getString(R.string.connected));
@@ -144,11 +148,11 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-
             }
 
             @Override
             protected Object doInBackground(Object[] params) {
+                appContext.CommBth.StopSearch();
                 return appContext.CommBth.StartSearch(finalSelectoption, searchCallback);
             }
 
@@ -174,6 +178,9 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
             switch (msg.what) {
                 case TOAST:
                     alert((String) msg.obj);
+                    if (msg.arg1 == 1) {
+                        finish();
+                    }
                     break;
             }
         }
@@ -181,8 +188,14 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
 
     private void resetSearch() {
         if (appContext.CommBth != null) {
+//            appContext.CommBth.StopSearch();
             appContext.CommBth.ResetBlueTooth();
         }
+        btSearchBlue.setEnabled(true);
+        tvBlueConnect.setEnabled(true);
+        tvBlueBreak.setEnabled(true);
+        tvBlueConnect.setText(R.string.connect);
+        adapter.setSelection(-1);
     }
 
     private void connectBlue() {
@@ -195,7 +208,7 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
             alert(R.string.please_choose_blue);
             return;
         }
-        final CommBlueDev dev = dataList.get(currentPosition);
+        final CommBlueDev dev = dataList.get(currentPosition).getData();
 
         appContext.CommBth.StopSearch();
 
@@ -269,16 +282,13 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
     }
 
     private void disConnectBlue() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                appContext.CommBth.StopSearch();
-                if (appContext.Mreader != null) {
-                    appContext.Mreader.DisConnect();
-                    appContext.CommBth.DisConnect();
-                }
-            }
-        }).start();
+        appContext.StopHandle();
+
+        appContext.CommBth.StopSearch();
+        if (appContext.Mreader != null) {
+            appContext.Mreader.DisConnect();
+//                    appContext.CommBth.DisConnect();
+        }
 
         this.btSearchBlue.setEnabled(true);
         tvBlueBreak.setEnabled(false);
@@ -292,7 +302,8 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
         public void OnSearch(CommBlueDev commBlueDev) {
             if (!blueDevice.containsKey(commBlueDev.getAddress())) {
                 blueDevice.put(commBlueDev.getAddress(), commBlueDev);
-                dataList.add(commBlueDev);
+                dataList.add(new BlueToothEntity(commBlueDev.getName(),
+                        commBlueDev.getAddress(), commBlueDev));
                 adapter.notifyDataSetChanged();
             }
         }
@@ -328,6 +339,7 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
                 Message message = new Message();
                 message.what = TOAST;
                 message.obj = AppContext.Constr_connectbluesetok;
+                message.arg1 = 1;
                 myHandler.sendMessage(message);
             } catch (Exception ex) {
                 appContext.CommBth.DisConnect();
@@ -374,7 +386,7 @@ public class BlueToothActivity extends MyBaseActivity implements View.OnClickLis
             myHandler.sendMessage(message);
             return;
         }
-        appContext.connectedBlue = dataList.get(currentPosition);
+        appContext.connectedBlue = dataList.get(currentPosition).getData();
         tvBlueConnect.setText(getResources().getString(R.string.connected));
     }
 
